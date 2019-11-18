@@ -22,6 +22,20 @@ defmodule Tradewinds.Trails do
   end
 
   @doc """
+  Returns all trails in the future.
+
+  ## Examples
+
+    iex> list_future_trails()
+    [%Trail{}, ...]
+
+  """
+  def list_future_trails do
+    query = from t in Tradewinds.Trails.Trail, where: t.start >= ^DateTime.utc_now
+    Repo.all(query)
+  end
+
+  @doc """
   Gets a single trail.
 
   Raises `Ecto.NoResultsError` if the Trail does not exist.
