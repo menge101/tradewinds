@@ -1,0 +1,23 @@
+<h1>Show Trail</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @trail.name %>
+  </li>
+
+  <li>
+    <strong>Desription:</strong>
+    <%= @trail.desription %>
+  </li>
+
+  <li>
+    <strong>Start:</strong>
+    <%= @trail.start %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.trail_path(@conn, :edit, @trail) %></span>
+<span><%= link "Back", to: Routes.trail_path(@conn, :index) %></span>

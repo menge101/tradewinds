@@ -1,0 +1,30 @@
+<h1>Listing Trails</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Desription</th>
+      <th>Start</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for trail <- @trails do %>
+    <tr>
+      <td><%= trail.name %></td>
+      <td><%= trail.desription %></td>
+      <td><%= trail.start %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.trail_path(@conn, :show, trail) %></span>
+        <span><%= link "Edit", to: Routes.trail_path(@conn, :edit, trail) %></span>
+        <span><%= link "Delete", to: Routes.trail_path(@conn, :delete, trail), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Trail", to: Routes.trail_path(@conn, :new) %></span>
