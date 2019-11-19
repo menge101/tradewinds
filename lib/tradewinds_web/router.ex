@@ -1,5 +1,6 @@
 defmodule TradewindsWeb.Router do
   use TradewindsWeb, :router
+  require Ueberauth
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -18,6 +19,15 @@ defmodule TradewindsWeb.Router do
 
     get "/", PageController, :index
     resources "/trails", TrailController
+    get "/logout", AuthController, :logout
+  end
+
+  scope "/auth", TradewindsWeb do
+    pipe_through :browser
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
+    post "/:provider/callback", AuthController, :callback
   end
 
   # Other scopes may use custom stacks.

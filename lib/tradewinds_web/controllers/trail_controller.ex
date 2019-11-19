@@ -4,6 +4,19 @@ defmodule TradewindsWeb.TrailController do
   alias Tradewinds.Trails
   alias Tradewinds.Trails.Trail
 
+  plug :secure
+
+  defp secure(conn, _params) do
+    user = get_session(conn, :current_user)
+    case user do
+     nil ->
+         conn |> redirect(to: "/auth/auth0") |> halt
+     _ ->
+       conn
+       |> assign(:current_user, user)
+    end
+  end
+
   def index(conn, _params) do
     trails = Trails.list_trails()
     render(conn, "index.html", trails: trails)

@@ -12,6 +12,22 @@ defmodule TradewindsWeb.TrailControllerTest do
     trail
   end
 
+  setup do
+    session_opts = Plug.Session.init(
+      store: :cookie,
+      key: "foobar",
+      encryption_salt: "encrypted cookie salt",
+      signing_salt: "signing salt",
+      log: false,
+      encrypt: false
+    )
+    conn = build_conn()
+        |> Plug.Session.call(session_opts)
+        |> fetch_session
+        |> put_session(:current_user, 'hi')
+    {:ok, conn: conn}
+  end
+
   describe "index" do
     test "lists all trails", %{conn: conn} do
       conn = get(conn, Routes.trail_path(conn, :index))
