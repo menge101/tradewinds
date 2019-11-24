@@ -41,6 +41,7 @@ config :auth0_ex,
        domain: System.get_env("AUTH0_DOMAIN"),
        mgmt_token: System.get_env("AUTH0_MGMT_TOKEN"),
        connection: System.get_env("AUTH0_CONN_NAME"),
+       provider_version: "v0.2.2",
        http_opts: []
 
 # Import environment specific config. This must remain at the bottom
