@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Auth0.Create do
+defmodule Mix.Tasks.Auth0.User.Create do
   use Mix.Task
 
   @shortdoc "Create a new user in Auth0"

@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Auth0.List do
+defmodule Mix.Tasks.Auth0.User.List do
   use Mix.Task
 
   @shortdoc "List all users in Auth0"

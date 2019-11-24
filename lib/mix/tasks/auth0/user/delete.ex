@@ -1,4 +1,4 @@
-defmodule Mix.Tasks.Auth0.Delete do
+defmodule Mix.Tasks.Auth0.User.Delete do
   use Mix.Task
 
   @shortdoc "Delete a user in Auth0"
