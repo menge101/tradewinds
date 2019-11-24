@@ -39,7 +39,8 @@ config :ueberauth, Ueberauth.Strategy.Auth0.OAuth,
 
 config :auth0_ex,
        domain: System.get_env("AUTH0_DOMAIN"),
-       mgmt_token: System.get_env("AUTH0_MGMT_TOKEN"),
+       mgmt_client_id: System.get_env("AUTH0_MGMT_CLIENT_ID"),
+       mgmt_client_secret: System.get_env("AUTH0_MGMT_CLIENT_SECRET"),
        connection: System.get_env("AUTH0_CONN_NAME"),
        provider_version: "v0.2.2",
        http_opts: []
