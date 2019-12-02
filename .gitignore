@@ -36,3 +36,4 @@ npm-debug.log
 *_bootstrapper.sh
 .idea/*
 .orig
+/scripts/set_dev_creds.sh
