@@ -19,6 +19,7 @@ defmodule TradewindsWeb.Router do
 
     get "/", PageController, :index
     resources "/trails", TrailController
+    resources "/users", UserController
     get "/logout", AuthController, :logout
   end
 

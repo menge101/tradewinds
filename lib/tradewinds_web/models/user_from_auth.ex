@@ -6,17 +6,35 @@ defmodule UserFromAuth do
   require Poison
 
   alias Ueberauth.Auth
+  alias Tradewinds.Accounts
+  alias Tradewinds.Accounts.User
 
   def find_or_create(%Auth{provider: :identity} = auth) do
     case validate_pass(auth.credentials) do
-      :ok ->
-        {:ok, basic_info(auth)}
+      :ok -> find_or_create_guts(auth)
       {:error, reason} -> {:error, reason}
     end
   end
 
   def find_or_create(%Auth{} = auth) do
-    {:ok, basic_info(auth)}
+    find_or_create_guts(auth)
+  end
+
+  def find_or_create(%Tradewinds.Accounts.User{id: id}), do: Accounts.get_user(id)
+
+  defp find_or_create_guts(auth) do
+    case Accounts.get_user(%{auth0_id: auth.uid}) do
+      {:ok, user} ->
+        User.atomize_permissions(user)
+        |> (fn user -> {:ok, user} end).()
+      {:error, _} -> extract_useful_stuff(auth) |> Accounts.create_user
+    end
+  end
+
+  defp extract_useful_stuff(auth_blob) do
+    %{uid: auth0_id, info: %{email: email} } = auth_blob
+    %{auth0_id: auth0_id, email: email, name: name_from_auth(auth_blob), avatar_url: avatar_from_auth(auth_blob), \
+      permissions: %{}}
   end
 
   # github does it this way
@@ -50,14 +68,8 @@ defmodule UserFromAuth do
     end
   end
 
-  defp validate_pass(%{other: %{password: ""}}) do
-    {:error, "Password required"}
-  end
-  defp validate_pass(%{other: %{password: pw, password_confirmation: pw}}) do
-    :ok
-  end
-  defp validate_pass(%{other: %{password: _}}) do
-    {:error, "Passwords do not match"}
-  end
+  defp validate_pass(%{other: %{password: ""}}), do: {:error, "Password required"}
+  defp validate_pass(%{other: %{password: pw, password_confirmation: pw}}), do: :ok
+  defp validate_pass(%{other: %{password: _}}), do: {:error, "Passwords do not match"}
   defp validate_pass(_), do: {:error, "Password Required"}
 end

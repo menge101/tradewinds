@@ -9,10 +9,6 @@
   <%= text_input f, :name %>
   <%= error_tag f, :name %>
 
-  <%= label f, :permissions %>
-  <%= multiple_select f, :permissions, ["Option 1": "option1", "Option 2": "option2"] %>
-  <%= error_tag f, :permissions %>
-
   <%= label f, :auth0_id %>
   <%= text_input f, :auth0_id %>
   <%= error_tag f, :auth0_id %>

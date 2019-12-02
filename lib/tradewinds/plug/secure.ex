@@ -1,5 +1,8 @@
 defmodule Tradewinds.Plug.Secure do
+  require Logger
   import Plug.Conn
+
+  alias Tradewinds.Accounts
 
   def init(options), do: options
 
@@ -10,7 +13,7 @@ defmodule Tradewinds.Plug.Secure do
         |> put_session(:navigation_path, path)
         |> Phoenix.Controller.redirect(to: "/auth/auth0")
         |> halt
-      user = _ ->
+      user ->
         conn
         |> assign(:current_user, user)
     end

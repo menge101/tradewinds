@@ -14,7 +14,12 @@
 <%= for user <- @users do %>
     <tr>
       <td><%= user.name %></td>
-      <td><%= user.permissions %></td>
+      <% for {k, v} <- user.permissions do %>
+        <td>
+          <%= k %>
+          <%= v %>
+        </td>
+      <% end %>
       <td><%= user.auth0_id %></td>
 
       <td>

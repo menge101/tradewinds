@@ -9,7 +9,10 @@
 
   <li>
     <strong>Permissions:</strong>
-    <%= @user.permissions %>
+    <% for {k, v} <- @user.permissions do %>
+      <%= k %>
+      <%= v %>
+    <% end %>
   </li>
 
   <li>

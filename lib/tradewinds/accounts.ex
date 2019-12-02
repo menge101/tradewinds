@@ -1,4 +1,5 @@
 defmodule Tradewinds.Accounts do
+  require Logger
   @moduledoc """
   The Accounts context.
   """
@@ -35,7 +36,59 @@ defmodule Tradewinds.Accounts do
       ** (Ecto.NoResultsError)
 
   """
+  def get_user!(%{} = map), do: Repo.get_by!(User, map)
   def get_user!(id), do: Repo.get!(User, id)
+
+  @doc """
+  Gets a single user.
+
+  ## Examples
+
+      iex> get_user!(123)
+      {:ok, %User{}}
+
+      iex> get_user!(456)
+      {:error, "blah"}
+
+  """
+  def get_user(%{} = map) do
+    try do
+      {:ok, get_user!(map)}
+    rescue
+      _ -> {:error, "User with #{inspect Map.to_list(map)}  not found"}
+    end
+  end
+
+
+  def get_user(id) do
+    try do
+      {:ok, get_user!(id)}
+    rescue
+      _ -> {:error, "User with ID: #{id} not found"}
+    end
+  end
+
+
+  @doc """
+  Gets permissions for a single user.
+
+  Creates a new user with an empty permission set if user is not found.
+
+  ## Examples
+
+      iex> get_perms(123)
+      []
+
+      iex> get_perms(456)
+      []
+
+  """
+  def get_perms(%{id: id} = _) do
+    case Tradewinds.Accounts.get_user(id) do
+      {:ok, user} -> user.permissions
+      _ -> []
+    end
+  end
 
   @doc """
   Creates a user.

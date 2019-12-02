@@ -47,7 +47,9 @@ defmodule Tradewinds.MixProject do
       {:ueberauth_auth0, "~> 0.3"},
       {:poison, "~> 4.0"},
       {:auth0_ex, "~> 0.4"},
-      {:httpoison, "~> 1.0"}
+      {:httpoison, "~> 1.0"},
+      {:permission_ex, "~> 0.6"},
+      {:canada, "~> 2.0"}
     ]
   end
 

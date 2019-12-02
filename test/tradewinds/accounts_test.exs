@@ -6,9 +6,9 @@ defmodule Tradewinds.AccountsTest do
   describe "users" do
     alias Tradewinds.Accounts.User
 
-    @valid_attrs %{auth0_id: "some auth0_id", name: "some name", permissions: []}
-    @update_attrs %{auth0_id: "some updated auth0_id", name: "some updated name", permissions: []}
-    @invalid_attrs %{auth0_id: nil, name: nil, permissions: nil}
+    @valid_attrs %{auth0_id: "some auth0_id", name: "some name", email: "some@email.com", permissions: %{}}
+    @update_attrs %{auth0_id: "some updated auth0_id", email: "someupdated@email.com", name: "some updated name", permissions: %{}}
+    @invalid_attrs %{auth0_id: nil, email: nil, name: nil, permissions: nil}
 
     def user_fixture(attrs \\ %{}) do
       {:ok, user} =
@@ -33,7 +33,7 @@ defmodule Tradewinds.AccountsTest do
       assert {:ok, %User{} = user} = Accounts.create_user(@valid_attrs)
       assert user.auth0_id == "some auth0_id"
       assert user.name == "some name"
-      assert user.permissions == []
+      assert user.permissions == %{}
     end
 
     test "create_user/1 with invalid data returns error changeset" do
@@ -45,7 +45,7 @@ defmodule Tradewinds.AccountsTest do
       assert {:ok, %User{} = user} = Accounts.update_user(user, @update_attrs)
       assert user.auth0_id == "some updated auth0_id"
       assert user.name == "some updated name"
-      assert user.permissions == []
+      assert user.permissions == %{}
     end
 
     test "update_user/2 with invalid data returns error changeset" do
