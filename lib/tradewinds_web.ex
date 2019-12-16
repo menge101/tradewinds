@@ -23,6 +23,7 @@ defmodule TradewindsWeb do
 
       import Plug.Conn
       import TradewindsWeb.Gettext
+      import TradewindsWeb.Helpers.Navigation
       alias TradewindsWeb.Router.Helpers, as: Routes
     end
   end
