@@ -24,10 +24,7 @@ defmodule TradewindsWeb.UserControllerTest do
     setup [:user_without_permission]
 
     test "show user displays the user", %{conn: conn, user: user} do
-      conn = delete(conn, Routes.user_path(conn, :show, user))
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
+      conn = get(conn, Routes.user_path(conn, :show, user))
       assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
     end
 
@@ -55,20 +52,17 @@ defmodule TradewindsWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
     end
 
-    test "edit user redirected to root", %{conn: conn, user: user} do
+    test "edit self successful", %{conn: conn, user: user} do
       conn = get(conn, Routes.user_path(conn, :edit, user))
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Edit User"
     end
 
-    test "update user redirected to root", %{conn: conn, user: user} do
+    test "update self is successful", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert redirected_to(conn) == Routes.user_path(conn, :show, user)
+
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      assert html_response(conn, 200) =~ "some updated auth0_id"
     end
 
     test "delete user redirects to root", %{conn: conn, user: user} do
@@ -112,20 +106,14 @@ defmodule TradewindsWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
     end
 
-    test "edit user redirected to root", %{conn: conn, user: user} do
+    test "edit self successful", %{conn: conn, user: user} do
       conn = get(conn, Routes.user_path(conn, :edit, user))
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Edit User"
     end
 
-    test "update user redirected to root", %{conn: conn, user: user} do
+    test "update user navigtes to show", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert redirected_to(conn) == Routes.user_path(conn, :show, user)
     end
 
     test "delete user redirects to root", %{conn: conn, user: user} do
@@ -156,7 +144,7 @@ defmodule TradewindsWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
     end
 
-    test "new user redirected to root", %{conn: conn} do
+    test "new user navigates correctly", %{conn: conn} do
       conn = get(conn, Routes.user_path(conn, :new))
       assert html_response(conn, 200) =~ "New User"
     end
@@ -169,20 +157,17 @@ defmodule TradewindsWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
     end
 
-    test "edit user redirected to root", %{conn: conn, user: user} do
+    test "edit self successful", %{conn: conn, user: user} do
       conn = get(conn, Routes.user_path(conn, :edit, user))
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Edit User"
     end
 
-    test "update user redirected to root", %{conn: conn, user: user} do
+    test "update self navigates to show", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert redirected_to(conn) == Routes.user_path(conn, :show, user)
+
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      assert html_response(conn, 200) =~ "some updated auth0_id"
     end
 
     test "delete user redirects to root", %{conn: conn, user: user} do
@@ -226,19 +211,16 @@ defmodule TradewindsWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
     end
 
-    test "edit user redirected to root", %{conn: conn, user: user} do
+    test "edit user navigates to show", %{conn: conn, user: user} do
       conn = get(conn, Routes.user_path(conn, :edit, user))
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
       assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
     end
 
-    test "update user redirected to root", %{conn: conn, user: user} do
+    test "user can update self", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
+      assert redirected_to(conn) == Routes.user_path(conn, :show, user)
+
+      conn = get(conn, Routes.user_path(conn, :show, user))
       assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
     end
 
@@ -291,11 +273,11 @@ defmodule TradewindsWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "Edit User"
     end
 
-    test "update user redirected to root", %{conn: conn, user: user} do
+    test "update user is successful and navigates to show", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
+      assert redirected_to(conn) == Routes.user_path(conn, :show, user)
+
+      conn = get(conn, Routes.user_path(conn, :show, user))
       assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
     end
 
@@ -344,11 +326,8 @@ defmodule TradewindsWeb.UserControllerTest do
     end
 
     test "edit user redirected to root", %{conn: conn, user: user} do
-      conn = get(conn, Routes.user_path(conn, :edit, user))
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
+      assert redirected_to(conn) == Routes.user_path(conn, :show, user)
     end
 
     test "update is successful", %{conn: conn, user: user} do
@@ -356,9 +335,6 @@ defmodule TradewindsWeb.UserControllerTest do
       assert redirected_to(conn) == Routes.user_path(conn, :show, user)
 
       conn = get(conn, Routes.user_path(conn, :show, user))
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
       assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
     end
 
@@ -411,20 +387,17 @@ defmodule TradewindsWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
     end
 
-    test "edit user redirected to root", %{conn: conn, user: user} do
+    test "navigate to edit successful", %{conn: conn, user: user} do
       conn = get(conn, Routes.user_path(conn, :edit, user))
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Edit User"
     end
 
-    test "update is redirected to root", %{conn: conn, user: user} do
+    test "update self successful", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert redirected_to(conn) == Routes.user_path(conn, :show, user)
+
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      assert html_response(conn, 200) =~ "some updated auth0_id"
     end
 
     test "delete user is successful", %{conn: conn, user: user} do
