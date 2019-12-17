@@ -9,10 +9,10 @@ defmodule TradewindsWeb.UserController do
 
   plug Tradewinds.Plug.Secure
 
-  @permissions [:index, :new, :create, :edit, :update, :delete, :show]
+  @permissions [:list, :create, :read, :write, :delete]
 
   def index(conn, _params) do
-    case conn.assigns.current_user |> can?(index(User)) do
+    case conn.assigns.current_user |> can?(list(User)) do
       {:ok, true} ->
         users = Accounts.list_users()
         render(conn, "index.html", users: users)
@@ -24,7 +24,7 @@ defmodule TradewindsWeb.UserController do
   end
 
   def new(conn, _params) do
-    case conn.assigns.current_user |> can?(new(User)) do
+    case conn.assigns.current_user |> can?(create(User)) do
       {:ok, true} ->
         changeset = Accounts.change_user(%User{})
         render(conn, "new.html", changeset: changeset)
@@ -55,69 +55,123 @@ defmodule TradewindsWeb.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    user = Accounts.get_user!(id)
-    case conn.assigns.current_user |> can?(show(user)) do
-      {:ok, true} -> render(conn, "show.html", user: user)
+    case Accounts.get_user(id) do
+      {:ok, user = %User{}} ->
+        case conn.assigns.current_user |> can?(read(user)) do
+          {:ok, true} -> render(conn, "show.html", user: user)
+          {:error, message} ->
+            conn
+            |> put_flash(:info, message)
+            |> redirect_back(default: "/")
+        end
       {:error, message} ->
-        conn
-        |> put_flash(:info, message)
-        |> redirect_back(default: "/")
+        # This permission check hides existing User IDs from any user without permission to see them
+        case conn.assigns.current_user |> can?(read(%User{})) do
+          {:ok, true} ->
+            conn
+            |> put_flash(:error, message)
+            |> redirect_back(default: "/")
+          {:error, message} ->
+            conn
+            |> put_flash(:info, message)
+            |> redirect_back(default: "/")
+        end
     end
   end
 
   def edit(conn, %{"id" => id}) do
-    user = Accounts.get_user!(id)
-    case conn.assigns.current_user |> can?(edit(user)) do
-      {:ok, true} ->
-        changeset = Accounts.change_user(user)
-        render(conn, "edit.html", user: user, changeset: changeset)
+    case Accounts.get_user(id) do
+      {:ok, user = %User{}} ->
+        case conn.assigns.current_user |> can?(write(user)) do
+          {:ok, true} ->
+            changeset = Accounts.change_user(user)
+            render(conn, "edit.html", user: user, changeset: changeset)
+          {:error, message} ->
+            conn
+            |> put_flash(:info, message)
+            |> redirect_back(default: "/")
+        end
       {:error, message} ->
-        conn
-        |> put_flash(:info, message)
-        |> redirect_back(default: "/")
+        # This permission check hides existing User IDs from any user without permission to see them
+        case conn.assigns.current_user |> can?(write(%User{})) do
+          {:ok, true} ->
+            conn
+            |> put_flash(:error, message)
+            |> redirect_back(default: "/")
+          {:error, message} ->
+            conn
+            |> put_flash(:info, message)
+            |> redirect_back(default: "/")
+        end
     end
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
-    user = Accounts.get_user!(id)
+    case Accounts.get_user(id) do
+      {:ok, user} ->
+        case conn.assigns.current_user |> can?(write(user)) do
+          {:ok, true} ->
+            case Accounts.update_user(user, user_params) do
+              {:ok, user} ->
+                conn
+                |> put_flash(:info, "User updated successfully.")
+                |> redirect(to: Routes.user_path(conn, :show, user))
 
-    case conn.assigns.current_user |> can?(update(user)) do
-      {:ok, true} ->
-        case Accounts.update_user(user, user_params) do
-          {:ok, user} ->
+              {:error, %Ecto.Changeset{} = changeset} ->
+                render(conn, "edit.html", user: user, changeset: changeset)
+            end
+          {:error, message} ->
             conn
-            |> put_flash(:info, "User updated successfully.")
-            |> redirect(to: Routes.user_path(conn, :show, user))
-
-           {:error, %Ecto.Changeset{} = changeset} ->
-             render(conn, "edit.html", user: user, changeset: changeset)
+            |> put_flash(:info, message)
+            |> redirect_back(default: "/")
         end
       {:error, message} ->
-        conn
-        |> put_flash(:info, message)
-        |> redirect_back(default: "/")
+        # This permission check hides existing User IDs from any user without permission to see them
+        case conn.assigns.current_user |> can?(write(%User{})) do
+          {:ok, true} ->
+            conn
+            |> put_flash(:error, message)
+            |> redirect_back(default: "/")
+          {:error, message} ->
+            conn
+            |> put_flash(:info, message)
+            |> redirect_back(default: "/")
+        end
     end
   end
 
   def delete(conn, %{"id" => id}) do
-    target_user = Accounts.get_user!(id)
-
-    case conn.assigns.current_user |> can?(delete(target_user)) do
-      {:ok, true} ->
-        case Accounts.delete_user(target_user) do
-          {:ok, _user} ->
-            conn
-            |> put_flash(:info, "User deleted successfully.")
-            |> redirect(to: Routes.user_path(conn, :index))
+    case Accounts.get_user(id) do
+      {:ok, target_user} ->
+        case conn.assigns.current_user |> can?(delete(target_user)) do
+          {:ok, true} ->
+            case Accounts.delete_user(target_user) do
+              {:ok, _user} ->
+                conn
+                |> put_flash(:info, "User deleted successfully.")
+                |> redirect(to: Routes.user_path(conn, :index))
+              {:error, message} ->
+                conn
+                |> put_flash(:info, "Error when deleting user: #{message}")
+                |> redirect_back(default: "/")
+            end
           {:error, message} ->
             conn
-            |> put_flash(:info, "Error when deleting user: #{message}")
+            |> put_flash(:info, message)
             |> redirect_back(default: "/")
         end
       {:error, message} ->
-        conn
-        |> put_flash(:error, message)
-        |> redirect_back(default: "/")
+        # This permission check hides existing User IDs from any user without permission to see them
+        case conn.assigns.current_user |> can?(delete(%User{})) do
+          {:ok, true} ->
+            conn
+            |> put_flash(:error, message)
+            |> redirect_back(default: "/")
+          {:error, inner_message} ->
+            conn
+            |> put_flash(:info, inner_message)
+            |> redirect_back(default: "/")
+        end
     end
   end
 end

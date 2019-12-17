@@ -6,26 +6,44 @@ defmodule TradewindsWeb.UserControllerTest do
   alias Tradewinds.Accounts
 
   @create_attrs %{auth0_id: "some auth0_id", name: "some name", email: "some@email.com", permissions: %{}}
-  @deletable_attrs %{auth0_id: "some other auth0_id", name: "some name", email: "some2@email.com", permissions: %{}}
+  @alt_attrs %{auth0_id: "some other auth0_id", name: "some name", email: "some2@email.com", permissions: %{}}
   @update_attrs %{auth0_id: "some updated auth0_id", email: "someupdated@email.com", name: "some updated name", permissions: %{}}
   @invalid_attrs %{auth0_id: nil, email: nil, name: nil, permissions: nil}
+  @nonexistent_id 99
 
   def fixture(:user) do
     {:ok, user} = Accounts.create_user(@create_attrs)
     user
   end
 
-  def fixture(:deletable_user) do
-    {:ok, user} = Accounts.create_user(@deletable_attrs)
+  def fixture(:alt_user) do
+    {:ok, user} = Accounts.create_user(@alt_attrs)
     user
   end
 
   describe "User has no permissions" do
     setup [:user_without_permission]
 
-    test "show user displays the user", %{conn: conn, user: user} do
+    test "show self is successful", %{conn: conn, user: user} do
       conn = get(conn, Routes.user_path(conn, :show, user))
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Show User"
+    end
+
+    test "show other user directed to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "show non-existent user redirected to root", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :show, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
     end
 
     test "list users redirected to root", %{conn: conn} do
@@ -33,7 +51,7 @@ defmodule TradewindsWeb.UserControllerTest do
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Current user does not have permission to access this content"
     end
 
     test "new user redirected to root", %{conn: conn} do
@@ -41,7 +59,7 @@ defmodule TradewindsWeb.UserControllerTest do
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Current user does not have permission to access this content"
     end
 
     test "create user redirected to root", %{conn: conn} do
@@ -49,12 +67,29 @@ defmodule TradewindsWeb.UserControllerTest do
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Current user does not have permission to access this content"
     end
 
     test "edit self successful", %{conn: conn, user: user} do
       conn = get(conn, Routes.user_path(conn, :edit, user))
       assert html_response(conn, 200) =~ "Edit User"
+    end
+
+    test "edit other redirected to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = get(conn, Routes.user_path(conn, :edit, user))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "edit non-existent user redirected to root", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :edit, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
     end
 
     test "update self is successful", %{conn: conn, user: user} do
@@ -65,27 +100,75 @@ defmodule TradewindsWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "some updated auth0_id"
     end
 
-    test "delete user redirects to root", %{conn: conn, user: user} do
+    test "update other user redirected to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "update non-existent user redirected to root", %{conn: conn} do
+      conn = put(conn, Routes.user_path(conn, :update, @nonexistent_id), user: @update_attrs)
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "delete user redirects to root, user cannot delete self", %{conn: conn, user: user} do
       conn = delete(conn, Routes.user_path(conn, :delete, user))
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "You cannot delete yourself"
     end
-  end
 
-  describe "User has :index permissions" do
-    setup [:user_with_index_permission]
-
-    test "show user displays the user", %{conn: conn, user: user} do
-      conn = delete(conn, Routes.user_path(conn, :show, user))
+    test "delete other user redirects to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = delete(conn, Routes.user_path(conn, :delete, user))
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
     end
 
-    test "list users redirected to root", %{conn: conn} do
+    test "delete non-existent user redirects to root", %{conn: conn} do
+      conn = delete(conn, Routes.user_path(conn, :delete, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+  end
+
+  describe "User has :list permissions" do
+    setup [:user_with_list_permission]
+
+    test "show self is successful", %{conn: conn, user: user} do
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      assert html_response(conn, 200) =~ "Show User"
+    end
+
+    test "show other user directed to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "show non-existent user redirected to root", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :show, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "list users successful", %{conn: conn} do
       conn = get(conn, Routes.user_path(conn, :index))
       assert html_response(conn, 200) =~ "Listing Users"
     end
@@ -95,7 +178,7 @@ defmodule TradewindsWeb.UserControllerTest do
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Current user does not have permission to access this content"
     end
 
     test "create user redirected to root", %{conn: conn} do
@@ -103,7 +186,7 @@ defmodule TradewindsWeb.UserControllerTest do
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Current user does not have permission to access this content"
     end
 
     test "edit self successful", %{conn: conn, user: user} do
@@ -111,58 +194,24 @@ defmodule TradewindsWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "Edit User"
     end
 
-    test "update user navigtes to show", %{conn: conn, user: user} do
-      conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
-      assert redirected_to(conn) == Routes.user_path(conn, :show, user)
-    end
-
-    test "delete user redirects to root", %{conn: conn, user: user} do
-      conn = delete(conn, Routes.user_path(conn, :delete, user))
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
-    end
-  end
-
-  describe "User has only :new permission" do
-    setup [:user_with_new_permission]
-
-    test "show user redirected to root", %{conn: conn, user: user} do
-      conn = delete(conn, Routes.user_path(conn, :show, user))
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
-    end
-
-    test "list users redirected to root", %{conn: conn} do
-      conn = get(conn, Routes.user_path(conn, :index))
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
-    end
-
-    test "new user navigates correctly", %{conn: conn} do
-      conn = get(conn, Routes.user_path(conn, :new))
-      assert html_response(conn, 200) =~ "New User"
-    end
-
-    test "create user redirected to root", %{conn: conn} do
-      conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
-    end
-
-    test "edit self successful", %{conn: conn, user: user} do
+    test "edit other redirected to root", %{conn: conn} do
+      user = fixture(:alt_user)
       conn = get(conn, Routes.user_path(conn, :edit, user))
-      assert html_response(conn, 200) =~ "Edit User"
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
     end
 
-    test "update self navigates to show", %{conn: conn, user: user} do
+    test "edit non-existent user redirected to root", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :edit, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "update self is successful", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
       assert redirected_to(conn) == Routes.user_path(conn, :show, user)
 
@@ -170,78 +219,72 @@ defmodule TradewindsWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "some updated auth0_id"
     end
 
-    test "delete user redirects to root", %{conn: conn, user: user} do
-      conn = delete(conn, Routes.user_path(conn, :delete, user))
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
-    end
-  end
-
-  describe "User has only :show permissions" do
-    setup [:user_with_show_permission]
-
-    test "show user displays the user", %{conn: conn, user: user} do
-      conn = get(conn, Routes.user_path(conn, :show, user))
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
-    end
-
-    test "list users redirected to root", %{conn: conn} do
-      conn = get(conn, Routes.user_path(conn, :index))
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
-    end
-
-    test "new user redirected to root", %{conn: conn} do
-      conn = get(conn, Routes.user_path(conn, :new))
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
-    end
-
-    test "create user redirected to root", %{conn: conn} do
-      conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
-    end
-
-    test "edit user navigates to show", %{conn: conn, user: user} do
-      conn = get(conn, Routes.user_path(conn, :edit, user))
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
-    end
-
-    test "user can update self", %{conn: conn, user: user} do
+    test "update other user redirected to root", %{conn: conn} do
+      user = fixture(:alt_user)
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
-      assert redirected_to(conn) == Routes.user_path(conn, :show, user)
-
-      conn = get(conn, Routes.user_path(conn, :show, user))
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
     end
 
-    test "delete user redirects to root", %{conn: conn, user: user} do
+    test "update non-existent user redirected to root", %{conn: conn} do
+      conn = put(conn, Routes.user_path(conn, :update, @nonexistent_id), user: @update_attrs)
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "delete user redirects to root, user cannot delete self", %{conn: conn, user: user} do
       conn = delete(conn, Routes.user_path(conn, :delete, user))
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "You cannot delete yourself"
     end
-  end
 
-  describe "User has only :edit permissions" do
-    setup [:user_with_edit_permission]
-
-    test "show user redirected to root", %{conn: conn, user: user} do
-      conn = delete(conn, Routes.user_path(conn, :show, user))
+    test "delete other user redirects to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = delete(conn, Routes.user_path(conn, :delete, user))
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "delete non-existent user redirects to root", %{conn: conn} do
+      conn = delete(conn, Routes.user_path(conn, :delete, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+  end
+
+  describe "User has only :create permission" do
+    setup [:user_with_create_permission]
+
+    test "show self is successful", %{conn: conn, user: user} do
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      assert html_response(conn, 200) =~ "Show User"
+    end
+
+    test "show other user directed to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "show non-existent user redirected to root", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :show, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
     end
 
     test "list users redirected to root", %{conn: conn} do
@@ -249,56 +292,113 @@ defmodule TradewindsWeb.UserControllerTest do
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Current user does not have permission to access this content"
     end
 
     test "new user redirected to root", %{conn: conn} do
       conn = get(conn, Routes.user_path(conn, :new))
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "New User"
     end
 
-    test "create user redirected to root", %{conn: conn} do
-      conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
-      redir_path = redirected_to(conn, 302)
-      assert "/" =~ redir_path
-      conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+    test "create user is successful", %{conn: conn} do
+      conn = post(conn, Routes.user_path(conn, :create), user: @alt_attrs)
+      assert %{id: id} = redirected_params(conn)
+      assert redirected_to(conn) == Routes.user_path(conn, :show, id)
     end
 
-    test "edit user successful", %{conn: conn, user: user} do
+    test "edit self successful", %{conn: conn, user: user} do
       conn = get(conn, Routes.user_path(conn, :edit, user))
       assert html_response(conn, 200) =~ "Edit User"
     end
 
-    test "update user is successful and navigates to show", %{conn: conn, user: user} do
+    test "edit other redirected to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = get(conn, Routes.user_path(conn, :edit, user))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "edit non-existent user redirected to root", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :edit, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "update self is successful", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
       assert redirected_to(conn) == Routes.user_path(conn, :show, user)
 
       conn = get(conn, Routes.user_path(conn, :show, user))
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "some updated auth0_id"
     end
 
-    test "delete user redirects to root", %{conn: conn, user: user} do
+    test "update other user redirected to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "update non-existent user redirected to root", %{conn: conn} do
+      conn = put(conn, Routes.user_path(conn, :update, @nonexistent_id), user: @update_attrs)
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "delete user redirects to root, user cannot delete self", %{conn: conn, user: user} do
       conn = delete(conn, Routes.user_path(conn, :delete, user))
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "You cannot delete yourself"
     end
-  end
 
-  describe "User has only :update permissions" do
-    setup [:user_with_update_permission]
-
-    test "show user redirected to root", %{conn: conn, user: user} do
-      conn = delete(conn, Routes.user_path(conn, :show, user))
+    test "delete other user redirects to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = delete(conn, Routes.user_path(conn, :delete, user))
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "delete non-existent user redirects to root", %{conn: conn} do
+      conn = delete(conn, Routes.user_path(conn, :delete, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+  end
+
+  describe "User has only :read permissions" do
+    setup [:user_with_read_permission]
+
+    test "show self is successful", %{conn: conn, user: user} do
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      assert html_response(conn, 200) =~ "Show User"
+    end
+
+    test "show other user directed to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      assert html_response(conn, 200) =~ "Show User"
+    end
+
+    test "show non-existent user redirected to root", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :show, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "User with ID: #{@nonexistent_id} not found"
     end
 
     test "list users redirected to root", %{conn: conn} do
@@ -306,7 +406,7 @@ defmodule TradewindsWeb.UserControllerTest do
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Current user does not have permission to access this content"
     end
 
     test "new user redirected to root", %{conn: conn} do
@@ -314,7 +414,7 @@ defmodule TradewindsWeb.UserControllerTest do
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Current user does not have permission to access this content"
     end
 
     test "create user redirected to root", %{conn: conn} do
@@ -322,45 +422,226 @@ defmodule TradewindsWeb.UserControllerTest do
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Current user does not have permission to access this content"
     end
 
-    test "edit user redirected to root", %{conn: conn, user: user} do
-      conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
-      assert redirected_to(conn) == Routes.user_path(conn, :show, user)
+    test "edit self successful", %{conn: conn, user: user} do
+      conn = get(conn, Routes.user_path(conn, :edit, user))
+      assert html_response(conn, 200) =~ "Edit User"
     end
 
-    test "update is successful", %{conn: conn, user: user} do
+    test "edit other redirected to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = get(conn, Routes.user_path(conn, :edit, user))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "edit non-existent user redirected to root", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :edit, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "update self is successful", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
       assert redirected_to(conn) == Routes.user_path(conn, :show, user)
 
       conn = get(conn, Routes.user_path(conn, :show, user))
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "some updated auth0_id"
     end
 
-    test "update renders error for invalid data", %{conn: conn, user: user} do
+    test "update other user redirected to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "update non-existent user redirected to root", %{conn: conn} do
+      conn = put(conn, Routes.user_path(conn, :update, @nonexistent_id), user: @update_attrs)
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "delete user redirects to root, user cannot delete self", %{conn: conn, user: user} do
+      conn = delete(conn, Routes.user_path(conn, :delete, user))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "You cannot delete yourself"
+    end
+
+    test "delete other user redirects to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = delete(conn, Routes.user_path(conn, :delete, user))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "delete non-existent user redirects to root", %{conn: conn} do
+      conn = delete(conn, Routes.user_path(conn, :delete, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+  end
+
+  describe "User has only :write permissions" do
+    setup [:user_with_write_permission]
+
+    test "show self is successful", %{conn: conn, user: user} do
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      assert html_response(conn, 200) =~ "Show User"
+    end
+
+    test "show other user directed to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "show non-existent user redirected to root", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :show, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "list users redirected to root", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :index))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to access this content"
+    end
+
+    test "new user redirected to root", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :new))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to access this content"
+    end
+
+    test "create user redirected to root", %{conn: conn} do
+      conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to access this content"
+    end
+
+    test "edit self successful", %{conn: conn, user: user} do
+      conn = get(conn, Routes.user_path(conn, :edit, user))
+      assert html_response(conn, 200) =~ "Edit User"
+    end
+
+    test "edit other redirected to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = get(conn, Routes.user_path(conn, :edit, user))
+      assert html_response(conn, 200) =~ "Edit User"
+    end
+
+    test "edit non-existent user redirected to root", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :edit, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "User with ID: #{@nonexistent_id} not found"
+    end
+
+    test "update self is successful", %{conn: conn, user: user} do
+      conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
+      assert redirected_to(conn) == Routes.user_path(conn, :show, user)
+
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      assert html_response(conn, 200) =~ "some updated auth0_id"
+    end
+
+    test "update other successful with valid data", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
+      assert redirected_to(conn) == Routes.user_path(conn, :show, user)
+    end
+
+    test "update other renders errors when data is invalid", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @invalid_attrs)
       assert html_response(conn, 200) =~ "Edit User"
     end
 
-    test "delete user redirects to root", %{conn: conn, user: user} do
+    test "update non-existent user redirected to root", %{conn: conn} do
+      conn = put(conn, Routes.user_path(conn, :update, @nonexistent_id), user: @update_attrs)
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "User with ID: #{@nonexistent_id} not found"
+    end
+
+    test "delete user redirects to root, user cannot delete self", %{conn: conn, user: user} do
       conn = delete(conn, Routes.user_path(conn, :delete, user))
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "You cannot delete yourself"
+    end
+
+    test "delete other user redirects to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = delete(conn, Routes.user_path(conn, :delete, user))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "delete non-existent user redirects to root", %{conn: conn} do
+      conn = delete(conn, Routes.user_path(conn, :delete, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
     end
   end
 
   describe "User has only :delete permissions" do
     setup [:user_with_delete_permission]
 
-    test "show user redirected to root", %{conn: conn, user: user} do
-      conn = delete(conn, Routes.user_path(conn, :show, user))
+    test "show self is successful", %{conn: conn, user: user} do
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      assert html_response(conn, 200) =~ "Show User"
+    end
+
+    test "show other user directed to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = get(conn, Routes.user_path(conn, :show, user))
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "show non-existent user redirected to root", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :show, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
     end
 
     test "list users redirected to root", %{conn: conn} do
@@ -368,7 +649,7 @@ defmodule TradewindsWeb.UserControllerTest do
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Current user does not have permission to access this content"
     end
 
     test "new user redirected to root", %{conn: conn} do
@@ -376,7 +657,7 @@ defmodule TradewindsWeb.UserControllerTest do
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Current user does not have permission to access this content"
     end
 
     test "create user redirected to root", %{conn: conn} do
@@ -384,15 +665,32 @@ defmodule TradewindsWeb.UserControllerTest do
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "Current user does not have permission to access this content"
     end
 
-    test "navigate to edit successful", %{conn: conn, user: user} do
+    test "edit self successful", %{conn: conn, user: user} do
       conn = get(conn, Routes.user_path(conn, :edit, user))
       assert html_response(conn, 200) =~ "Edit User"
     end
 
-    test "update self successful", %{conn: conn, user: user} do
+    test "edit other redirected to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = get(conn, Routes.user_path(conn, :edit, user))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "edit non-existent user redirected to root", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :edit, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "update self is successful", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
       assert redirected_to(conn) == Routes.user_path(conn, :show, user)
 
@@ -400,20 +698,57 @@ defmodule TradewindsWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "some updated auth0_id"
     end
 
-    test "delete user is successful", %{conn: conn, user: user} do
+    test "update other user redirected to root", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "update non-existent user redirected to root", %{conn: conn} do
+      conn = put(conn, Routes.user_path(conn, :update, @nonexistent_id), user: @update_attrs)
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to perform this action on this user."
+    end
+
+    test "delete user redirects to root, user cannot delete self", %{conn: conn, user: user} do
       conn = delete(conn, Routes.user_path(conn, :delete, user))
       redir_path = redirected_to(conn, 302)
       assert "/" =~ redir_path
       conn = get(recycle(conn), redir_path)
-      assert html_response(conn, 200) =~ "Tradewinds · Phoenix Framework"
+      assert html_response(conn, 200) =~ "You cannot delete yourself"
+    end
+
+    test "delete other user is successful, redirects to user list", %{conn: conn} do
+      user = fixture(:alt_user)
+      conn = delete(conn, Routes.user_path(conn, :delete, user))
+      redir_path = redirected_to(conn, 302)
+      assert "/users" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "Current user does not have permission to access this content"
+    end
+
+    test "delete non-existent user redirects to root", %{conn: conn} do
+      conn = delete(conn, Routes.user_path(conn, :delete, @nonexistent_id))
+      redir_path = redirected_to(conn, 302)
+      assert "/" =~ redir_path
+      conn = get(recycle(conn), redir_path)
+      assert html_response(conn, 200) =~ "User with ID: #{@nonexistent_id} not found"
     end
   end
 
-  describe "User has delete and index privilege" do
-    setup [:user_with_delete_index_permissions]
+  describe "User has delete and list privilege" do
+    setup [:user_with_delete_list_permissions]
 
     test "delete properly navigates to the index", %{conn: conn} do
-      user = fixture(:deletable_user)
+      user = fixture(:alt_user)
       conn = delete(conn, Routes.user_path(conn, :delete, user))
       redir_path = redirected_to(conn, 302)
       assert Routes.user_path(conn, :index) =~ redir_path
@@ -423,7 +758,7 @@ defmodule TradewindsWeb.UserControllerTest do
   end
 
   describe "user has update and show permission" do
-    setup [:user_with_update_show_permissions]
+    setup [:user_with_write_read_permissions]
 
     test "update properly navigates to show", %{conn: conn, user: user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
@@ -444,36 +779,32 @@ defmodule TradewindsWeb.UserControllerTest do
     login_user(context, create_user(%{}))
   end
 
-  defp user_with_index_permission(context) do
-    login_user(context, create_user(%{user: [:index]}))
+  defp user_with_list_permission(context) do
+    login_user(context, create_user(%{user: [:list]}))
   end
 
-  defp user_with_new_permission(context) do
-    login_user(context, create_user(%{user: [:new]}))
+  defp user_with_create_permission(context) do
+    login_user(context, create_user(%{user: [:create]}))
   end
 
-  defp user_with_show_permission(context) do
-    login_user(context, create_user(%{user: [:show]}))
+  defp user_with_read_permission(context) do
+    login_user(context, create_user(%{user: [:read]}))
   end
 
-  defp user_with_edit_permission(context) do
-    login_user(context, create_user(%{user: [:edit]}))
-  end
-
-  defp user_with_update_permission(context) do
-    login_user(context, create_user(%{user: [:update]}))
+  defp user_with_write_permission(context) do
+    login_user(context, create_user(%{user: [:write]}))
   end
 
   defp user_with_delete_permission(context) do
     login_user(context, create_user(%{user: [:delete]}))
   end
 
-  defp user_with_delete_index_permissions(context) do
-    login_user(context, create_user(%{user: [:delete, :index]}))
+  defp user_with_delete_list_permissions(context) do
+    login_user(context, create_user(%{user: [:delete, :list]}))
   end
 
-  defp user_with_update_show_permissions(context) do
-    login_user(context, create_user(%{user: [:update, :show]}))
+  defp user_with_write_read_permissions(context) do
+    login_user(context, create_user(%{user: [:write, :read]}))
   end
 
   defp login_user(%{conn: conn}, {:ok, [{:user, user} | _]}) do

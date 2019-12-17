@@ -4,24 +4,28 @@ defmodule Tradewinds.Accounts.User.Abilities do
   require Logger
 
   defimpl Canada.Can, for: User do
-    @allowed_self_actions [:show, :edit, :update]
+    @allowed_self_actions [:read, :write]
 
     def can?(%User{id: current_user_id, permissions: perms}, :delete, %User{id: user_id}) do
       case current_user_id == user_id do
         true ->
           {:error, "You cannot delete yourself"}
         false ->
-          case Enum.member?(perms[:user], :delete) do
-            true ->
-              {:ok, true}
-            false ->
-              {:error, "Current user does not have permission to delete users."}
+          case Map.get(perms, :user, nil) do
+            nil ->
+              {:error, "Current user does not have permission to perform this action on this user."}
+            user_perms ->
+              case Enum.member?(perms[:user], :delete) do
+                true ->
+                  {:ok, true}
+                false ->
+                  {:error, "Current user does not have permission to perform this action on this user."}
+              end
           end
       end
     end
 
     def can?(%User{permissions: perms}, action, User) do
-      Logger.debug("Perms: #{inspect perms}")
       case Map.get(perms, :user, nil) do
         nil ->
           {:error, "Current user does not have permission to access this content"}
@@ -38,7 +42,7 @@ defmodule Tradewinds.Accounts.User.Abilities do
         true ->
           case Enum.member?(@allowed_self_actions, action) do
             true -> {:ok, true}
-            false -> {:error, "User cannot perform this action on themself"}
+            false -> {:error, "User cannot perform this action on themselves"}
           end
         false ->
           case Map.get(perms, :user, nil) do
