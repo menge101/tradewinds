@@ -9,7 +9,7 @@ defmodule Tradewinds.Accounts.User.Abilities do
         true ->
           {:error, "You cannot delete yourself"}
         false ->
-          case Enum.member?(perms["user"], :delete) do
+          case Enum.member?(perms[:user], :delete) do
             true ->
               {:ok, true}
             false ->

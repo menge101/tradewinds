@@ -81,7 +81,7 @@ defmodule TradewindsWeb.UserController do
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Accounts.get_user!(id)
 
-    case conn.assigns.current_user |> can?(edit(user)) do
+    case conn.assigns.current_user |> can?(update(user)) do
       {:ok, true} ->
         case Accounts.update_user(user, user_params) do
           {:ok, user} ->
