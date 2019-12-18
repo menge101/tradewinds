@@ -34,7 +34,7 @@ defmodule UserFromAuth do
   defp extract_useful_stuff(auth_blob) do
     %{uid: auth0_id, info: %{email: email} } = auth_blob
     %{auth0_id: auth0_id, email: email, name: name_from_auth(auth_blob), avatar_url: avatar_from_auth(auth_blob), \
-      permissions: %{}}
+      permissions: %{}, creator: "auth0"}
   end
 
   # github does it this way

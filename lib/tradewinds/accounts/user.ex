@@ -9,6 +9,7 @@ defmodule Tradewinds.Accounts.User do
     field :permissions, {:map, {:array, :string}}
     field :avatar_link, :string
     field :email, :string
+    field :creator, :string
 
     timestamps()
   end

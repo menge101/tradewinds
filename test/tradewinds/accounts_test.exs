@@ -6,9 +6,9 @@ defmodule Tradewinds.AccountsTest do
   describe "users" do
     alias Tradewinds.Accounts.User
 
-    @valid_attrs %{auth0_id: "some auth0_id", name: "some name", email: "some@email.com", permissions: %{}}
-    @update_attrs %{auth0_id: "some updated auth0_id", email: "someupdated@email.com", name: "some updated name", permissions: %{}}
-    @invalid_attrs %{auth0_id: nil, email: nil, name: nil, permissions: nil}
+    @valid_attrs %{auth0_id: "some auth0_id", name: "some name", email: "some@email.com", permissions: %{}, creator: "exunit tests"}
+    @update_attrs %{auth0_id: "some updated auth0_id", email: "someupdated@email.com", name: "some updated name", permissions: %{}, creator: "exunit tests", owner: nil}
+    @invalid_attrs %{auth0_id: nil, email: nil, name: nil, permissions: nil, creator: nil}
 
     def user_fixture(attrs \\ %{}) do
       {:ok, user} =

@@ -5,11 +5,11 @@ defmodule TradewindsWeb.UserControllerTest do
 
   alias Tradewinds.Accounts
 
-  @create_attrs %{auth0_id: "some auth0_id", name: "some name", email: "some@email.com", permissions: %{}}
-  @alt_attrs %{auth0_id: "some other auth0_id", name: "some name", email: "some2@email.com", permissions: %{}}
-  @update_attrs %{auth0_id: "some updated auth0_id", email: "someupdated@email.com", name: "some updated name", permissions: %{}}
-  @invalid_attrs %{auth0_id: nil, email: nil, name: nil, permissions: nil}
-  @nonexistent_id 99
+  @create_attrs %{auth0_id: "some auth0_id", name: "some name", email: "some@email.com", permissions: %{}, creator: "exunit tests", owner: nil}
+  @alt_attrs %{auth0_id: "some other auth0_id", name: "some name", email: "some2@email.com", permissions: %{}, creator: "exunit tests", owner: nil}
+  @update_attrs %{auth0_id: "some updated auth0_id", email: "someupdated@email.com", name: "some updated name", permissions: %{}, creator: "exunit tests", owner: nil}
+  @invalid_attrs %{auth0_id: nil, email: nil, name: nil, permissions: nil, creator: nil, owner: nil}
+  @nonexistent_id 999999
 
   def fixture(:user) do
     {:ok, user} = Accounts.create_user(@create_attrs)

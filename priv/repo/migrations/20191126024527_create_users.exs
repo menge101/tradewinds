@@ -8,6 +8,7 @@ defmodule Tradewinds.Repo.Migrations.CreateUsers do
       add :auth0_id, :string
       add :avatar_link, :string
       add :email, :string
+      add :creator, :string
 
       timestamps()
     end
