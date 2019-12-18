@@ -43,6 +43,28 @@ defmodule Tradewinds.Trails do
   ## Examples
 
       iex> get_trail!(123)
+      {:ok, %Trail{}}
+
+      iex> get_trail!(456)
+      {:error, "Trail with ID: 456 not found"
+
+  """
+  def get_trail(id) do
+    try do
+      {:ok, get_trail!(id)}
+    rescue
+      _ -> {:error, "Trail with ID: #{id} not found"}
+    end
+  end
+
+  @doc """
+  Gets a single trail.
+
+  Raises `Ecto.NoResultsError` if the Trail does not exist.
+
+  ## Examples
+
+      iex> get_trail!(123)
       %Trail{}
 
       iex> get_trail!(456)

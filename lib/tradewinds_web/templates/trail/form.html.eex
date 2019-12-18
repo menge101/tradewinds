@@ -9,9 +9,9 @@
   <%= text_input f, :name %>
   <%= error_tag f, :name %>
 
-  <%= label f, :desription %>
-  <%= text_input f, :desription %>
-  <%= error_tag f, :desription %>
+  <%= label f, :description %>
+  <%= text_input f, :description %>
+  <%= error_tag f, :description %>
 
   <%= label f, :start %>
   <%= datetime_select f, :start %>

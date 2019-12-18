@@ -4,7 +4,7 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Desription</th>
+      <th>Description</th>
       <th>Start</th>
 
       <th></th>
@@ -14,7 +14,7 @@
 <%= for trail <- @trails do %>
     <tr>
       <td><%= trail.name %></td>
-      <td><%= trail.desription %></td>
+      <td><%= trail.description %></td>
       <td><%= trail.start %></td>
 
       <td>

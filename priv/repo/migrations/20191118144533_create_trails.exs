@@ -4,10 +4,13 @@ defmodule Tradewinds.Repo.Migrations.CreateTrails do
   def change do
     create table(:trails) do
       add :name, :string
-      add :desription, :string
-      add :start, :naive_datetime
+      add :description, :string
+      add :start, :utc_datetime
+      add :hares, {:array, :id}
+      add :owners, {:array, :id}
+      add :creator, :id
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
   end

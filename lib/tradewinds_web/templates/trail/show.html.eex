@@ -8,8 +8,8 @@
   </li>
 
   <li>
-    <strong>Desription:</strong>
-    <%= @trail.desription %>
+    <strong>Description:</strong>
+    <%= @trail.description %>
   </li>
 
   <li>

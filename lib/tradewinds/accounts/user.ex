@@ -11,7 +11,7 @@ defmodule Tradewinds.Accounts.User do
     field :email, :string
     field :creator, :string
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

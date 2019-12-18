@@ -10,7 +10,7 @@ defmodule Tradewinds.Repo.Migrations.CreateUsers do
       add :email, :string
       add :creator, :string
 
-      timestamps()
+      timestamps(type: :utc_datetime)
     end
 
     create unique_index(:users, [:auth0_id])
