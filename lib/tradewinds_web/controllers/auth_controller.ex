@@ -1,10 +1,7 @@
 defmodule TradewindsWeb.AuthController do
   use TradewindsWeb, :controller
-  alias TradewindsWeb.Router.Helpers
 
   plug Ueberauth
-
-  alias Ueberauth.Strategy.Helpers
 
   def logout(conn, _params) do
     conn

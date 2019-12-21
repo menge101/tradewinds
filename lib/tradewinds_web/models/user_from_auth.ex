@@ -50,10 +50,6 @@ defmodule UserFromAuth do
     nil
   end
 
-  defp basic_info(auth) do
-    %{id: auth.uid, name: name_from_auth(auth), avatar: avatar_from_auth(auth)}
-  end
-
   defp name_from_auth(auth) do
     if auth.info.name do
       auth.info.name

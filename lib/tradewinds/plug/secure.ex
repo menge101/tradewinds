@@ -2,8 +2,6 @@ defmodule Tradewinds.Plug.Secure do
   require Logger
   import Plug.Conn
 
-  alias Tradewinds.Accounts
-
   def init(options), do: options
 
   def call(conn, _opts) do
