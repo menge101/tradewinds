@@ -64,6 +64,10 @@ defmodule Tradewinds.Trails.Trail.Abilities do
     end
   end
 
+  def permissions do
+    @permissions
+  end
+
   defp can_historical(start) do
     case DateTime.now("Etc/UTC") do
       {:ok, current} ->

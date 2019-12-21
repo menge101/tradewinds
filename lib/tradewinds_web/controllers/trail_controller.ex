@@ -7,8 +7,6 @@ defmodule TradewindsWeb.TrailController do
 
   plug Tradewinds.Plug.Secure
 
-  @permissions [:list, :create, :read, :write, :delete]
-
   def index(conn, _params) do
     case conn.assigns.current_user |> can?(:list, Trail) do
       {:ok, true} ->
@@ -169,6 +167,6 @@ defmodule TradewindsWeb.TrailController do
   end
 
   def permission_list do
-    @permissions
+    permissions()
   end
 end

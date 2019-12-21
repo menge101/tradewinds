@@ -48,8 +48,6 @@ defmodule Tradewinds.MixProject do
       {:poison, "~> 4.0"},
       {:auth0_ex, "~> 0.4"},
       {:httpoison, "~> 1.0"},
-      {:permission_ex, "~> 0.6"},
-      {:canada, "~> 2.0"},
       {:navigation_history, "~> 0.3"}
     ]
   end
