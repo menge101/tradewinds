@@ -15,7 +15,7 @@ defmodule Tradewinds.Accounts.User.Abilities do
             nil ->
               {:error, "Current user does not have permission to perform this action on this user."}
             user_perms ->
-              case Enum.member?(perms[:user], :delete) do
+              case Enum.member?(user_perms, :delete) do
                 true ->
                   {:ok, true}
                 false ->

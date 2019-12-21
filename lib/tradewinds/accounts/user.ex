@@ -1,7 +1,6 @@
 defmodule Tradewinds.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
-  import Canada.Can
 
   schema "users" do
     field :auth0_id, :string
