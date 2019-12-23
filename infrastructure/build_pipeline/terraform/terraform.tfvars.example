@@ -1,0 +1,5 @@
+profile = "some_profile"
+cred_file = "path_to_aws_credentials_file"
+auth0_domain = "example.auth0.com"
+auth0_client = "a client id"
+auth0_secret = "a client secret"

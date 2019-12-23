@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - mix deps.get
+  pre_build:
+    commands:
+      - service postgresql start
+      - su postgres -c "psql postgres -c \"ALTER USER postgres PASSWORD 'postgres';\""
+  build:
+    commands:
+      - mix compile
+      - mix test

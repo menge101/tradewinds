@@ -37,3 +37,9 @@ npm-debug.log
 .idea/*
 .orig
 /scripts/set_dev_creds.sh
+
+# ignoring local setup tfvars
+infrastructure/build_pipeline/terraform/terraform.tfvars
+/terraform.tfstate
+/terraform.tfstate.backup
+.terraform
