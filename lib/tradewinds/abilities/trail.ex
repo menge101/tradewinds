@@ -16,7 +16,7 @@ defmodule Tradewinds.Trails.Trail.Abilities do
         case Map.get(perms, :trail, nil) do
           nil -> @no_instance_permission
           trail_perms ->
-            case Enum.member?(trail_perms, :write) do
+            case Enum.member?(trail_perms, :delete) do
               false -> @no_instance_permission
               true -> can_historical(start)
             end
@@ -39,7 +39,7 @@ defmodule Tradewinds.Trails.Trail.Abilities do
     end
   end
 
-  def can?(%User{permissions: perms}, :create, Trail) do
+  def can?(%User{permissions: perms}, :create, _) do
     case Map.get(perms, :trail, nil) do
       nil -> @no_access_permission
       trail_perms ->
@@ -50,14 +50,7 @@ defmodule Tradewinds.Trails.Trail.Abilities do
     end
   end
 
-  def can?(%User{}, action, %Trail{}) do
-    case Enum.member?(@permissions, action) do
-      true -> @approved
-      false -> @no_access_permission
-    end
-  end
-
-  def can?(%User{}, action, Trail) do
+  def can?(%User{}, action, _) do
     case Enum.member?(@permissions, action) do
       true -> @approved
       false -> @no_access_permission
