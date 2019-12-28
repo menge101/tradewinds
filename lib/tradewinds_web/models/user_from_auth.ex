@@ -5,9 +5,9 @@ defmodule UserFromAuth do
   require Logger
   require Poison
 
-  alias Ueberauth.Auth
   alias Tradewinds.Accounts
   alias Tradewinds.Accounts.User
+  alias Ueberauth.Auth
 
   def find_or_create(%Auth{provider: :identity} = auth) do
     case validate_pass(auth.credentials) do
@@ -38,13 +38,13 @@ defmodule UserFromAuth do
   end
 
   # github does it this way
-  defp avatar_from_auth( %{info: %{urls: %{avatar_url: image}} }), do: image
+  defp avatar_from_auth(%{info: %{urls: %{avatar_url: image}}}), do: image
 
   # facebook does it this way
-  defp avatar_from_auth( %{info: %{image: image} }), do: image
+  defp avatar_from_auth(%{info: %{image: image}}), do: image
 
   # default case if nothing matches
-  defp avatar_from_auth( auth ) do
+  defp avatar_from_auth(auth) do
     Logger.warn auth.provider <> " needs to find an avatar URL!"
     Logger.debug(Poison.encode!(auth))
     nil
@@ -57,9 +57,10 @@ defmodule UserFromAuth do
       name = [auth.info.first_name, auth.info.last_name]
              |> Enum.filter(&(&1 != nil and &1 != ""))
 
-      cond do
-        length(name) == 0 -> auth.info.nickname
-        true -> Enum.join(name, " ")
+      if Enum.empty?(name) do
+        auth.info.nickname
+      else
+        Enum.join(name, " ")
       end
     end
   end

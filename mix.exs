@@ -49,7 +49,8 @@ defmodule Tradewinds.MixProject do
       {:poison, "~> 4.0"},
       {:auth0_ex, "~> 0.4"},
       {:httpoison, "~> 1.0"},
-      {:navigation_history, "~> 0.3"}
+      {:navigation_history, "~> 0.3"},
+      {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false}
     ]
   end
 

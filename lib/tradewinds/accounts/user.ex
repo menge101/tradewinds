@@ -1,4 +1,7 @@
 defmodule Tradewinds.Accounts.User do
+  @moduledoc """
+  Accounts - User model
+"""
   use Ecto.Schema
   import Ecto.Changeset
 

@@ -1,6 +1,6 @@
 # Tradewinds
 
-![AWS build badge](https://codebuild.us-east-2.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiM1ZDOUVNMW9mSXRiWmFGelpCYmNETXVQcnhHWFBNNWVIYmlPOTMwelhud2N3bWg0bjdVUzF6NlVZSGFlSlNUazB3MllIRHh6ekNab2M1Q1FFS2wvUGUwPSIsIml2UGFyYW1ldGVyU3BlYyI6InJhUmN2S0UzNHNndVp6STUiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
+![AWS build badge](https://codebuild.us-east-2.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoicXRVZnBQcVorU2YxMUR4SzE3VE43T25GdktWN3FGTjZlaWhBaE5hbEl1YURzbjVCVVhkUUt1NnhlNU9pZEcxWUFLT1VnOUZtb1BjdThVZENrOXdxNGlFPSIsIml2UGFyYW1ldGVyU3BlYyI6Inp0bzY0YjBFWTRQVlE1YSsiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
 
 
 ### CI

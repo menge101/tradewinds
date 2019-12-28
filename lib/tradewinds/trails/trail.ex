@@ -1,4 +1,7 @@
 defmodule Tradewinds.Trails.Trail do
+  @moduledoc """
+  Trails - Trail model
+"""
   use Ecto.Schema
   import Ecto.Changeset
 

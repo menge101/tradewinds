@@ -2,8 +2,8 @@ defmodule TradewindsWeb.TrailControllerTest do
   use TradewindsWeb.ConnCase
   import Plug.Test
 
-  alias Tradewinds.Trails
   alias Tradewinds.Accounts
+  alias Tradewinds.Trails
 
   @create_attrs %{description: "some description", name: "some name", start: ~U[2100-04-17 14:00:00Z]}
   @old_attrs %{description: "old description", name: "old name", start: ~U[2001-04-17 14:00:00Z]}

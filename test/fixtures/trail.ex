@@ -1,9 +1,9 @@
 defmodule Tradewinds.Fixtures.Trail do
   @moduledoc false
 
-  alias Tradewinds.Trails.Trail
   alias Tradewinds.Accounts.User, as: User
   alias Tradewinds.Fixtures.User, as: UserFixture
+  alias Tradewinds.Trails.Trail
 
   def creator_attrs(overloads \\ %{}) do
     UserFixture.user_attrs(
@@ -25,10 +25,10 @@ defmodule Tradewinds.Fixtures.Trail do
           description: "some description",
           name: "some name",
           start: ~U[2100-04-17 14:00:00Z],
-          owners: [5,6],
+          owners: [5, 6],
           creator: 7
         },
-        fn (_,v1,_) -> v1 end)
+        fn (_, v1, _) -> v1 end)
   end
 
   def old_attrs(overloads \\ %{}) do

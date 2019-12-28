@@ -3,8 +3,8 @@ defmodule Tradewinds.Abilities.UserTest do
   import Tradewinds.Fixtures.Common
   import Tradewinds.Fixtures.User
 
-  alias Tradewinds.Accounts.User.Abilities
   alias Tradewinds.Accounts.User
+  alias Tradewinds.Accounts.User.Abilities
 
   describe "current user with only read permission" do
     setup do

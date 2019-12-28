@@ -52,22 +52,16 @@ defmodule Tradewinds.Accounts do
 
   """
   def get_user(%{} = map) do
-    try do
-      {:ok, get_user!(map)}
-    rescue
-      _ -> {:error, "User with #{inspect Map.to_list(map)}  not found"}
-    end
+    {:ok, get_user!(map)}
+  rescue
+    _ -> {:error, "User with #{inspect Map.to_list(map)}  not found"}
   end
-
 
   def get_user(id) do
-    try do
-      {:ok, get_user!(id)}
-    rescue
-      _ -> {:error, "User with ID: #{id} not found"}
-    end
+    {:ok, get_user!(id)}
+  rescue
+    _ -> {:error, "User with ID: #{id} not found"}
   end
-
 
   @doc """
   Gets permissions for a single user.

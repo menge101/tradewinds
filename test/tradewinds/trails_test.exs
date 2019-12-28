@@ -1,12 +1,12 @@
 defmodule Tradewinds.TrailsTest do
   use Tradewinds.DataCase
 
-  alias Tradewinds.Trails
   alias Tradewinds.Accounts
-  
+  alias Tradewinds.Trails
+
   @creator_attrs %{auth0_id: "creator auth0_id", name: "some name", email: "creator@email.com", permissions: %{}, creator: "exunit test"}
-  @valid_attrs %{description: "some description", name: "some name", start: ~U[2010-04-17 14:00:00Z], creator: 99999}
-  @update_attrs %{description: "some updated description", name: "some updated name", start: ~U[2011-05-18 15:01:01Z], creator: 888888}
+  @valid_attrs %{description: "some description", name: "some name", start: ~U[2010-04-17 14:00:00Z], creator: 99_999}
+  @update_attrs %{description: "some updated description", name: "some updated name", start: ~U[2011-05-18 15:01:01Z], creator: 888_888}
   @invalid_attrs %{description: nil, name: nil, start: nil, creator: nil}
 
   def fixture(atom, attrs \\ %{})

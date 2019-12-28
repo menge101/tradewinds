@@ -16,6 +16,8 @@ defmodule Tradewinds.DataCase do
 
   use ExUnit.CaseTemplate
 
+  alias Ecto.Adapters.SQL.Sandbox
+
   using do
     quote do
       alias Tradewinds.Repo
@@ -28,10 +30,10 @@ defmodule Tradewinds.DataCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Tradewinds.Repo)
+    :ok = Sandbox.checkout(Tradewinds.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Tradewinds.Repo, {:shared, self()})
+      Sandbox.mode(Tradewinds.Repo, {:shared, self()})
     end
 
     :ok

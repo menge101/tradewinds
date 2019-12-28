@@ -1,4 +1,9 @@
 defmodule Tradewinds.Accounts.User.Abilities do
+  @moduledoc """
+    This module holds the logic for User authorization based on the current logged in user, the target user,
+  and the desired action.
+  """
+  import Tradewinds.Abilities.Common
   alias Tradewinds.Accounts.User
 
   require Logger
@@ -14,47 +19,29 @@ defmodule Tradewinds.Accounts.User.Abilities do
   @instance_perms [:read, :write, :delete]
 
   def can?(%User{id: current_user_id, permissions: perms}, :delete, %User{id: user_id}) do
-    case current_user_id == user_id do
-      true -> @cannot_delete_self
-      false ->
-        case Map.get(perms, :user, nil) do
-          nil -> @no_instance_permission
-          user_perms ->
-            case Enum.member?(user_perms, :delete) do
-              true -> @approved
-              false -> @no_instance_permission
-            end
-        end
+    cond do
+      current_user_id == user_id -> @cannot_delete_self
+      perm?(perms, :user, :delete) -> @approved
+      true -> @no_instance_permission
     end
   end
 
   def can?(%User{permissions: perms}, action, User) when action in @access_perms do
-    case Map.get(perms, :user, nil) do
-      nil -> @no_access_permission
-      user_perms ->
-        case Enum.member?(user_perms, action) do
-          true -> @approved
-          false -> @no_access_permission
-        end
+    case perm?(perms, :user, action) do
+      true -> @approved
+      false -> @no_access_permission
     end
   end
 
   def can?(%User{id: current_user_id, permissions: perms}, action, %User{id: user_id}) when action in @instance_perms do
-    case current_user_id == user_id do
-      true ->
+    cond do
+      current_user_id == user_id ->
         case Enum.member?(@allowed_self_actions, action) do
           true -> @approved
           false -> @no_self_permission
         end
-      false ->
-        case Map.get(perms, :user, nil) do
-          nil -> @no_instance_permission
-          user_perms ->
-            case Enum.member?(user_perms, action) do
-              true -> @approved
-              false -> @no_instance_permission
-            end
-        end
+      perm?(perms, :user, action) -> @approved
+      true -> @no_instance_permission
     end
   end
 

@@ -9,7 +9,7 @@ defmodule TradewindsWeb.UserControllerTest do
   @alt_attrs %{auth0_id: "some other auth0_id", name: "some name", email: "some2@email.com", permissions: %{}, creator: "exunit tests", owner: nil}
   @update_attrs %{auth0_id: "some updated auth0_id", email: "someupdated@email.com", name: "some updated name", permissions: %{}, creator: "exunit tests", owner: nil}
   @invalid_attrs %{auth0_id: nil, email: nil, name: nil, permissions: nil, creator: nil, owner: nil}
-  @nonexistent_id 999999
+  @nonexistent_id 999_999
 
   def fixture(:user) do
     {:ok, user} = Accounts.create_user(@create_attrs)

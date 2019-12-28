@@ -12,3 +12,4 @@ phases:
     commands:
       - mix compile
       - mix test
+      - mix credo --strict

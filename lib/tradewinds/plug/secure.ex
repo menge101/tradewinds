@@ -1,4 +1,8 @@
 defmodule Tradewinds.Plug.Secure do
+  @moduledoc """
+  This module is home to the Auth0 authentication plug.
+"""
+
   require Logger
   import Plug.Conn
 

@@ -50,11 +50,9 @@ defmodule Tradewinds.Trails do
 
   """
   def get_trail(id) do
-    try do
-      {:ok, get_trail!(id)}
-    rescue
-      _ -> {:error, "Trail with ID: #{id} not found"}
-    end
+    {:ok, get_trail!(id)}
+  rescue
+    _ -> {:error, "Trail with ID: #{id} not found"}
   end
 
   @doc """
