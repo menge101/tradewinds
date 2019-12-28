@@ -10,6 +10,8 @@ defmodule Tradewinds.Accounts.User.Abilities do
   @approved {:ok, true}
   @no_self_permission {:error, "User cannot perform this action on themselves"}
   @permissions [:list, :read, :write, :create, :delete]
+  @access_perms [:list, :create]
+  @instance_perms [:read, :write, :delete]
 
   def can?(%User{id: current_user_id, permissions: perms}, :delete, %User{id: user_id}) do
     case current_user_id == user_id do
@@ -26,7 +28,7 @@ defmodule Tradewinds.Accounts.User.Abilities do
     end
   end
 
-  def can?(%User{permissions: perms}, action, User) do
+  def can?(%User{permissions: perms}, action, User) when action in @access_perms do
     case Map.get(perms, :user, nil) do
       nil -> @no_access_permission
       user_perms ->
@@ -37,7 +39,7 @@ defmodule Tradewinds.Accounts.User.Abilities do
     end
   end
 
-  def can?(%User{id: current_user_id, permissions: perms}, action, %User{id: user_id}) do
+  def can?(%User{id: current_user_id, permissions: perms}, action, %User{id: user_id}) when action in @instance_perms do
     case current_user_id == user_id do
       true ->
         case Enum.member?(@allowed_self_actions, action) do
