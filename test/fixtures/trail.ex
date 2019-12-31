@@ -41,10 +41,6 @@ defmodule Tradewinds.Fixtures.Trail do
     {:error, "Current user does not have permission to perform this action on this trail."}
   end
 
-  def no_access_permission do
-    {:error, "Current user does not have permission to access this content"}
-  end
-
   def cannot_change_history do
     {:error, "Historic records are not editable"}
   end

@@ -45,10 +45,6 @@ defmodule Tradewinds.Fixtures.User do
     error_response("Current user does not have permission to perform this action on this user.")
   end
 
-  def no_access_permission do
-    error_response("Current user does not have permission to access this content")
-  end
-
   def cannot_delete_self do
     error_response("You cannot delete yourself")
   end

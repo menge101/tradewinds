@@ -1,0 +1,40 @@
+<h1>Listing Events</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Hosting kennel</th>
+      <th>Start</th>
+      <th>End</th>
+      <th>Description</th>
+      <th>Location</th>
+      <th>Latitude</th>
+      <th>Longitude</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for event <- @events do %>
+    <tr>
+      <td><%= event.name %></td>
+      <td><%= event.hosting_kennel %></td>
+      <td><%= event.start %></td>
+      <td><%= event.end %></td>
+      <td><%= event.description %></td>
+      <td><%= event.location %></td>
+      <td><%= event.latitude %></td>
+      <td><%= event.longitude %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.event_path(@conn, :show, event) %></span>
+        <span><%= link "Edit", to: Routes.event_path(@conn, :edit, event) %></span>
+        <span><%= link "Delete", to: Routes.event_path(@conn, :delete, event), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Event", to: Routes.event_path(@conn, :new) %></span>
