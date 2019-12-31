@@ -46,7 +46,7 @@ defmodule Tradewinds.Trails do
       {:ok, %Trail{}}
 
       iex> get_trail!(456)
-      {:error, "Trail with ID: 456 not found"
+      {:error, "Trail with ID: 456 not found"}
 
   """
   def get_trail(id) do

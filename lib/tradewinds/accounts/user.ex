@@ -20,6 +20,7 @@ defmodule Tradewinds.Accounts.User do
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:name, :permissions, :auth0_id, :avatar_link, :email])
+    |> unique_constraint(:auth0_id)
     |> validate_required([:permissions, :auth0_id, :email])
   end
 

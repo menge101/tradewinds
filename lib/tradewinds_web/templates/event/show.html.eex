@@ -1,0 +1,48 @@
+<h1>Show Event</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @event.name %>
+  </li>
+
+  <li>
+    <strong>Hosting kennel:</strong>
+    <%= @event.hosting_kennel %>
+  </li>
+
+  <li>
+    <strong>Start:</strong>
+    <%= @event.start %>
+  </li>
+
+  <li>
+    <strong>End:</strong>
+    <%= @event.end %>
+  </li>
+
+  <li>
+    <strong>Description:</strong>
+    <%= @event.description %>
+  </li>
+
+  <li>
+    <strong>Location:</strong>
+    <%= @event.location %>
+  </li>
+
+  <li>
+    <strong>Latitude:</strong>
+    <%= @event.latitude %>
+  </li>
+
+  <li>
+    <strong>Longitude:</strong>
+    <%= @event.longitude %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.event_path(@conn, :edit, @event) %></span>
+<span><%= link "Back", to: Routes.event_path(@conn, :index) %></span>

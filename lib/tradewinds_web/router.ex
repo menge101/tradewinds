@@ -19,6 +19,7 @@ defmodule TradewindsWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    resources "/events", EventController
     resources "/trails", TrailController
     resources "/users", UserController
     get "/logout", AuthController, :logout
