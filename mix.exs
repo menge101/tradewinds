@@ -10,7 +10,15 @@ defmodule Tradewinds.MixProject do
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+
+      # Docs
+      name: "Tradewinds",
+      source_url: "https://github.com/menge101/tradewinds",
+      docs: [
+        main: "Tradewinds", # The main page in the docs
+        extras: ["README.md"]
+      ]
     ]
   end
 
@@ -50,7 +58,9 @@ defmodule Tradewinds.MixProject do
       {:auth0_ex, "~> 0.4"},
       {:httpoison, "~> 1.0"},
       {:navigation_history, "~> 0.3"},
-      {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false},
+      {:inch_ex, github: "rrrene/inch_ex", only: [:dev, :test]}
     ]
   end
 

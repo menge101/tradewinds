@@ -1,4 +1,7 @@
 defmodule TradewindsWeb.UserController do
+  @moduledoc """
+  This module defines the controller used for User-related requests.
+"""
   use TradewindsWeb, :controller
   import Tradewinds.Accounts.User.Abilities
   require Logger
@@ -8,6 +11,9 @@ defmodule TradewindsWeb.UserController do
 
   plug Tradewinds.Plug.Secure
 
+  @doc """
+  This function is used to dispatch index requests
+"""
   def index(conn, _params) do
     case conn.assigns.current_user |> can?(:list) do
       {:ok, true} ->
@@ -20,6 +26,9 @@ defmodule TradewindsWeb.UserController do
     end
   end
 
+  @doc """
+  This function is used dispatch requests that create a new User.
+"""
   def new(conn, _params) do
     case conn.assigns.current_user |> can?(:create) do
       {:ok, true} ->
@@ -32,6 +41,9 @@ defmodule TradewindsWeb.UserController do
     end
   end
 
+  @doc """
+  THis function is used to dispatch create requests
+"""
   def create(conn, %{"user" => user_params}) do
     case conn.assigns.current_user |> can?(:create) do
       {:ok, true} ->
@@ -51,6 +63,9 @@ defmodule TradewindsWeb.UserController do
     end
   end
 
+  @doc """
+  This function is used to dispatch show requests
+"""
   def show(conn, %{"id" => id}) do
     case Accounts.get_user(id) do
       {:ok, user = %User{}} ->

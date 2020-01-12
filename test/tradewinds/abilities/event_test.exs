@@ -196,5 +196,31 @@ defmodule Tradewinds.Abilities.EventsTest do
     end
   end
 
+  describe "a user with only read privilege, and an event with no admins" do
+    setup [:create_event_wo_admins, :user_with_read_permission]
+
+    test "user can read the event", %{user: user, event: event} do
+      assert Common.approved() == Abilities.can?(user, :read, event)
+    end
+
+    test "user cannot write the event", %{user: user, event: event} do
+      assert Abilities.no_instance_permission() == Abilities.can?(user, :write, event)
+    end
+  end
+
+  describe "a user with only read privilege, and an event with nil admins" do
+    setup [:create_event_w_nil_admins, :user_with_read_permission]
+
+    test "user can read the event", %{user: user, event: event} do
+      assert Common.approved() == Abilities.can?(user, :read, event)
+    end
+
+    test "user cannot write the event", %{user: user, event: event} do
+      assert Abilities.no_instance_permission() == Abilities.can?(user, :write, event)
+    end
+  end
+
   defp create_event(_), do: fixture(:event, %{}, false)
+  defp create_event_wo_admins(_), do: fixture(:event, %{admins: []}, false)
+  defp create_event_w_nil_admins(_), do: fixture(:event, %{admins: nil}, false)
 end
