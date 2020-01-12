@@ -1,5 +1,9 @@
 defmodule Mix.Tasks.Auth0.Client.Set do
+  @moduledoc """
+    This module is home to the mix task used to set an Auth0 client as the active client in use
+  """
   use Mix.Task
+  alias Auth0Ex.Management.Client
 
   @doc """
     Set a Auth0 client as active.
@@ -19,13 +23,14 @@ defmodule Mix.Tasks.Auth0.Client.Set do
     This task is meant as a configuration setup task.  This task sets ENV vars, which are read at startup by the system.
     If the primary application is already running, this will not cause any change.
   """
+  @doc since: "0.1.0"
 
   @shortdoc "Set active Auth0 client"
   def run(argv) do
     Application.ensure_all_started(:hackney)
     Application.ensure_all_started(:auth0_ex)
     [name | _] = argv
-    Auth0Ex.Management.Client.all(%{fields: "name,client_id"})
+    Client.all(%{fields: "name,client_id"})
     |> case do
          {:ok, results} -> Enum.filter(results, fn result -> result["name"] == name end)
          |> case do
@@ -33,7 +38,7 @@ defmodule Mix.Tasks.Auth0.Client.Set do
              IO.puts("Client with name: #{name} not found")
              exit({:error, 1})
            [client | []] ->
-             Auth0Ex.Management.Client.get(client["client_id"])
+             Client.get(client["client_id"])
            [_, _] ->
              IO.puts("Ambiguous client match")
              exit({:error, 1})

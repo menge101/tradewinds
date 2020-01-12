@@ -1,7 +1,10 @@
 defmodule Mix.Tasks.Auth0.Client.Update do
+  @moduledoc """
+    This module is home to the mix task used to update Auth0 clients
+  """
   use Mix.Task
   import Mix.Tasks.Auth0.Client.Common
-
+  alias Auth0Ex.Management.Client
 
   @doc """
     Update a Auth0 client.
@@ -15,13 +18,14 @@ defmodule Mix.Tasks.Auth0.Client.Update do
     `mix Auth0.Client.update client_id name=something other=args as=needed`
     The pairs are spit into key-value pairs in a map and then applied to the existing client.
   """
+  @doc since: "0.1.0"
 
   @shortdoc "Create a new client in Auth0"
   def run(argv) do
     Application.ensure_all_started(:hackney)
     Application.ensure_all_started(:auth0_ex)
     [client_id | args] = argv
-    Auth0Ex.Management.Client.update(client_id, args_to_map(args))
+    Client.update(client_id, args_to_map(args))
     |> case do
          {:error, error_string, _} ->
            %{"statusCode" => code, "error" => error, "message" => message} = Poison.decode!(error_string)

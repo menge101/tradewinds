@@ -1,7 +1,10 @@
 defmodule Mix.Tasks.Auth0.Client.Create do
+  @moduledoc """
+  This module is home to the mix task used to create Auth0 clients
+"""
   use Mix.Task
   import Mix.Tasks.Auth0.Client.Common
-
+  alias Auth0Ex.Management.Client
 
   @doc """
     Create a Auth0 client.
@@ -17,7 +20,7 @@ defmodule Mix.Tasks.Auth0.Client.Create do
     tradewinds/config/auth0_client.json
     Anything specified on the command line will overwrite the config in the JSON file.
   """
-
+  @doc since: "0.1.0"
   @shortdoc "Create a new client in Auth0"
   def run(argv) do
     Application.ensure_all_started(:hackney)
@@ -29,7 +32,7 @@ defmodule Mix.Tasks.Auth0.Client.Create do
       {:ok, content} -> Poison.decode!(content)
     end
     |> Map.merge(args_to_map(argv))
-    |> Auth0Ex.Management.Client.create
+    |> Client.create
     |> case do
          {:error, error_string, _} ->
            %{"statusCode" => code, "error" => error, "message" => message} = Poison.decode!(error_string)
