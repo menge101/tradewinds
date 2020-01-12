@@ -11,22 +11,16 @@ defmodule Tradewinds.Events.Event.Abilities do
   @access_permissions [:create, :list]
   @instance_permissions [:read, :write, :delete]
 
-  def can?(%User{id: user_id,  permissions: perms}, action, %Event{admins: admins}) do
+  def can?(%User{id: user_id,  permissions: perms}, action, %Event{admins: admins}) when action in @instance_permissions do
     cond do
       perm?(perms, :event, action) -> approved()
-      admins == nil -> no_access_permission()
-      Enum.member?(admins, user_id) ->
-        if Enum.member?(@instance_permissions, action) do
-          approved()
-        else
-          invalid_request("Event", action)
-        end
-      Enum.member?(@access_permissions, action) -> no_access_permission()
-      Enum.member?(@instance_permissions, action) -> no_instance_permission()
+      admins == nil -> no_instance_permission()
+      Enum.member?(admins, user_id) -> approved()
+      true -> no_instance_permission()
     end
   end
 
-  def can?(%User{permissions: perms}, action, Event) do
+  def can?(%User{permissions: perms}, action) when action in @access_permissions do
     if perm?(perms, :event, action) do
       approved()
     else

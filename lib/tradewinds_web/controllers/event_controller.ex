@@ -8,7 +8,7 @@ defmodule TradewindsWeb.EventController do
   plug Tradewinds.Plug.Secure
 
   def index(conn, _params) do
-    case conn.assigns.current_user |> can?(:list, Event) do
+    case conn.assigns.current_user |> can?(:list) do
       {:ok, true} ->
         events = Events.list_events()
         render(conn, "index.html", events: events)
@@ -20,7 +20,7 @@ defmodule TradewindsWeb.EventController do
   end
 
   def new(conn, _params) do
-    case conn.assigns.current_user |> can?(:create, Event) do
+    case conn.assigns.current_user |> can?(:create) do
       {:ok, true} ->
         changeset = Events.change_event(%Event{})
         render(conn, "new.html", changeset: changeset)
@@ -32,7 +32,7 @@ defmodule TradewindsWeb.EventController do
   end
 
   def create(conn, %{"event" => event_params}) do
-    case conn.assigns.current_user |> can?(:create, Event) do
+    case conn.assigns.current_user |> can?(:create) do
       {:ok, true} ->
         case Events.create_event(event_params) do
           {:ok, event} ->

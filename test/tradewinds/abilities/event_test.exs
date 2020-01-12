@@ -19,12 +19,12 @@ defmodule Tradewinds.Abilities.EventsTest do
       assert Abilities.no_instance_permission() == Abilities.can?(user, :delete, event)
     end
 
-    test "cannot list events", %{user: user, event: event} do
-      assert Common.no_access_permission() == Abilities.can?(user, :list, event)
+    test "cannot list events", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :list)
     end
 
-    test "cannot create events", %{user: user, event: event} do
-      assert Common.no_access_permission() == Abilities.can?(user, :create, event)
+    test "cannot create events", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :create)
     end
   end
 
@@ -43,12 +43,12 @@ defmodule Tradewinds.Abilities.EventsTest do
       assert Abilities.no_instance_permission() == Abilities.can?(user, :delete, event)
     end
 
-    test "cannot list events", %{user: user, event: event} do
-      assert Common.no_access_permission() == Abilities.can?(user, :list, event)
+    test "cannot list events", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :list)
     end
 
-    test "cannot create events", %{user: user, event: event} do
-      assert Common.no_access_permission() == Abilities.can?(user, :create, event)
+    test "cannot create events", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :create)
     end
   end
 
@@ -67,12 +67,12 @@ defmodule Tradewinds.Abilities.EventsTest do
       assert Common.approved() == Abilities.can?(user, :delete, event)
     end
 
-    test "cannot list events", %{user: user, event: event} do
-      assert Common.no_access_permission() == Abilities.can?(user, :list, event)
+    test "cannot list events", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :list)
     end
 
-    test "cannot create events", %{user: user, event: event} do
-      assert Common.no_access_permission() == Abilities.can?(user, :create, event)
+    test "cannot create events", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :create)
     end
   end
 
@@ -91,12 +91,12 @@ defmodule Tradewinds.Abilities.EventsTest do
       assert Abilities.no_instance_permission() == Abilities.can?(user, :delete, event)
     end
 
-    test "can list events", %{user: user, event: event} do
-      assert Common.approved() == Abilities.can?(user, :list, event)
+    test "can list events", %{user: user} do
+      assert Common.approved() == Abilities.can?(user, :list)
     end
 
-    test "cannot create events", %{user: user, event: event} do
-      assert Common.no_access_permission() == Abilities.can?(user, :create, event)
+    test "cannot create events", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :create)
     end
   end
 
@@ -115,12 +115,12 @@ defmodule Tradewinds.Abilities.EventsTest do
       assert Abilities.no_instance_permission() == Abilities.can?(user, :delete, event)
     end
 
-    test "cannot list events", %{user: user, event: event} do
-      assert Common.no_access_permission() == Abilities.can?(user, :list, event)
+    test "cannot list events", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :list)
     end
 
-    test "can create events", %{user: user, event: event} do
-      assert Common.approved() == Abilities.can?(user, :create, event)
+    test "can create events", %{user: user} do
+      assert Common.approved() == Abilities.can?(user, :create)
     end
   end
 
@@ -139,12 +139,12 @@ defmodule Tradewinds.Abilities.EventsTest do
       assert Abilities.no_instance_permission() == Abilities.can?(user, :delete, event)
     end
 
-    test "cannot list events", %{user: user, event: event} do
-      assert Common.no_access_permission() == Abilities.can?(user, :list, event)
+    test "cannot list events", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :list)
     end
 
-    test "cannot create events", %{user: user, event: event} do
-      assert Common.no_access_permission() == Abilities.can?(user, :create, event)
+    test "cannot create events", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :create)
     end
   end
 
@@ -163,12 +163,12 @@ defmodule Tradewinds.Abilities.EventsTest do
       assert Abilities.no_instance_permission() == Abilities.can?(user, :delete, event)
     end
 
-    test "cannot list events", %{user: user, event: event} do
-      assert Common.no_access_permission() == Abilities.can?(user, :list, event)
+    test "cannot list events", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :list)
     end
 
-    test "cannot create events", %{user: user, event: event} do
-      assert Common.no_access_permission() == Abilities.can?(user, :create, event)
+    test "cannot create events", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :create)
     end
   end
 
@@ -187,12 +187,12 @@ defmodule Tradewinds.Abilities.EventsTest do
       assert Common.approved() == Abilities.can?(user, :delete, event)
     end
 
-    test "cannot list events", %{user: user, event: event} do
-      assert Common.invalid_request("Event", :list) == Abilities.can?(user, :list, event)
+    test "cannot list events", %{user: user} do
+      assert Common.no_access_permission == Abilities.can?(user, :list)
     end
 
-    test "cannot create events", %{user: user, event: event} do
-      assert Common.invalid_request("Event", :create) == Abilities.can?(user, :create, event)
+    test "cannot create events", %{user: user} do
+      assert Common.no_access_permission == Abilities.can?(user, :create)
     end
   end
 
