@@ -26,11 +26,11 @@ defmodule Tradewinds.Abilities.UserTest do
     end
 
     test "cannot list users", %{current_user: current} do
-      assert Common.no_access_permission() == Abilities.can?(current, :list, User)
+      assert Common.no_access_permission() == Abilities.can?(current, :list)
     end
 
     test "cannot create a user", %{current_user: current} do
-      assert Common.no_access_permission() == Abilities.can?(current, :create, User)
+      assert Common.no_access_permission() == Abilities.can?(current, :create)
     end
   end
 
@@ -54,11 +54,11 @@ defmodule Tradewinds.Abilities.UserTest do
     end
 
     test "cannot list users", %{current_user: current} do
-      assert Common.no_access_permission() == Abilities.can?(current, :list, User)
+      assert Common.no_access_permission() == Abilities.can?(current, :list)
     end
 
     test "cannot create a user", %{current_user: current} do
-      assert Common.no_access_permission() == Abilities.can?(current, :create, User)
+      assert Common.no_access_permission() == Abilities.can?(current, :create)
     end
   end
 
@@ -82,11 +82,11 @@ defmodule Tradewinds.Abilities.UserTest do
     end
 
     test "cannot list users", %{current_user: current} do
-      assert Common.no_access_permission() == Abilities.can?(current, :list, User)
+      assert Common.no_access_permission() == Abilities.can?(current, :list)
     end
 
     test "cannot create a user", %{current_user: current} do
-      assert Common.no_access_permission() == Abilities.can?(current, :create, User)
+      assert Common.no_access_permission() == Abilities.can?(current, :create)
     end
   end
 
@@ -110,11 +110,11 @@ defmodule Tradewinds.Abilities.UserTest do
     end
 
     test "can list users", %{current_user: current} do
-      assert Common.approved() == Abilities.can?(current, :list, User)
+      assert Common.approved() == Abilities.can?(current, :list)
     end
 
     test "cannot create a user", %{current_user: current} do
-      assert Common.no_access_permission() == Abilities.can?(current, :create, User)
+      assert Common.no_access_permission() == Abilities.can?(current, :create)
     end
   end
 
@@ -138,11 +138,11 @@ defmodule Tradewinds.Abilities.UserTest do
     end
 
     test "cannot list users", %{current_user: current} do
-      assert Common.no_access_permission() == Abilities.can?(current, :list, User)
+      assert Common.no_access_permission() == Abilities.can?(current, :list)
     end
 
     test "can create a user", %{current_user: current} do
-      assert Common.approved() == Abilities.can?(current, :create, User)
+      assert Common.approved() == Abilities.can?(current, :create)
     end
   end
 

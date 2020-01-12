@@ -10,37 +10,30 @@ defmodule Tradewinds.Trails.Trail.Abilities do
 
   @cannot_change_history {:error, "Historic records are not editable"}
   @permissions [:read, :write, :list, :delete, :create]
+  @historically_pertinent_actions [:write, :delete]
 
-  def can?(%User{id: user_id, permissions: perms}, :delete, %Trail{owners: owners, start: start})  do
+  def can?(%User{id: user_id, permissions: perms}, action, %Trail{owners: owners, start: start}) when action in @historically_pertinent_actions do
     cond do
       historical?(start) -> @cannot_change_history
       Enum.member?(owners, user_id) -> approved()
-      perm?(perms, :trail, :delete) -> approved()
+      perm?(perms, :trail, action) -> approved()
       true -> no_instance_permission()
     end
   end
 
-  def can?(%User{id: user_id, permissions: perms}, :write, %Trail{start: start, owners: owners}) do
-    cond do
-      historical?(start) -> @cannot_change_history
-      Enum.member?(owners, user_id) -> approved()
-      perm?(perms, :trail, :write) -> approved()
-      true -> no_instance_permission()
-    end
+  def can?(%User{}, :read, %Trail{}) do
+    approved()
   end
 
-  def can?(%User{permissions: perms}, :create, _) do
+  def can?(%User{permissions: perms}, :create) do
     case perm?(perms, :trail, :create) do
       true -> approved()
       false -> no_access_permission()
     end
   end
 
-  def can?(%User{}, action, _) do
-    case Enum.member?(@permissions, action) do
-      true -> approved()
-      false -> no_access_permission()
-    end
+  def can?(%User{}, :list) do
+    approved()
   end
 
   def permissions do

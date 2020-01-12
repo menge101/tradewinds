@@ -9,7 +9,7 @@ defmodule TradewindsWeb.UserController do
   plug Tradewinds.Plug.Secure
 
   def index(conn, _params) do
-    case conn.assigns.current_user |> can?(:list, User) do
+    case conn.assigns.current_user |> can?(:list) do
       {:ok, true} ->
         users = Accounts.list_users()
         render(conn, "index.html", users: users)
@@ -21,7 +21,7 @@ defmodule TradewindsWeb.UserController do
   end
 
   def new(conn, _params) do
-    case conn.assigns.current_user |> can?(:create, User) do
+    case conn.assigns.current_user |> can?(:create) do
       {:ok, true} ->
         changeset = Accounts.change_user(%User{})
         render(conn, "new.html", changeset: changeset)
@@ -33,7 +33,7 @@ defmodule TradewindsWeb.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    case conn.assigns.current_user |> can?(:create, User) do
+    case conn.assigns.current_user |> can?(:create) do
       {:ok, true} ->
         case Accounts.create_user(user_params) do
           {:ok, user} ->

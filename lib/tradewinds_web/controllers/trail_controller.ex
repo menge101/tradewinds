@@ -8,7 +8,7 @@ defmodule TradewindsWeb.TrailController do
   plug Tradewinds.Plug.Secure
 
   def index(conn, _params) do
-    case conn.assigns.current_user |> can?(:list, Trail) do
+    case conn.assigns.current_user |> can?(:list) do
       {:ok, true} ->
         trails = Trails.list_trails()
         render(conn, "index.html", trails: trails)
@@ -20,7 +20,7 @@ defmodule TradewindsWeb.TrailController do
   end
 
   def new(conn, _params) do
-    case conn.assigns.current_user |> can?(:create, Trail) do
+    case conn.assigns.current_user |> can?(:create) do
       {:ok, true} ->
         changeset = Trails.change_trail(%Trail{})
         render(conn, "new.html", changeset: changeset)
@@ -32,7 +32,7 @@ defmodule TradewindsWeb.TrailController do
   end
 
   def create(conn, %{"trail" => trail_params}) do
-    case conn.assigns.current_user |> can?(:create, Trail) do
+    case conn.assigns.current_user |> can?(:create) do
       {:ok, true} ->
         trail_params
         |> Map.put_new("creator", conn.assigns.current_user.id)

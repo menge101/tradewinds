@@ -35,12 +35,12 @@ defmodule Tradewinds.Abilities.TrailsTest do
       assert Abilities.no_instance_permission() == Abilities.can?(user, :delete, trail)
     end
 
-    test "can list trails", %{user: user, trail: trail} do
-      assert Common.approved() == Abilities.can?(user, :list, trail)
+    test "can list trails", %{user: user} do
+      assert Common.approved() == Abilities.can?(user, :list)
     end
 
-    test "cannot create trails", %{user: user, trail: trail} do
-      assert Common.no_access_permission() == Abilities.can?(user, :create, trail)
+    test "cannot create trails", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :create)
     end
   end
 
@@ -59,12 +59,12 @@ defmodule Tradewinds.Abilities.TrailsTest do
       assert Abilities.no_instance_permission() == Abilities.can?(user, :delete, trail)
     end
 
-    test "can list trails", %{user: user, trail: trail} do
-      assert Common.approved() == Abilities.can?(user, :list, trail)
+    test "can list trails", %{user: user} do
+      assert Common.approved() == Abilities.can?(user, :list)
     end
 
-    test "cannot create trails", %{user: user, trail: trail} do
-      assert Common.no_access_permission() == Abilities.can?(user, :create, trail)
+    test "cannot create trails", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :create)
     end
   end
 
@@ -83,12 +83,12 @@ defmodule Tradewinds.Abilities.TrailsTest do
       assert Abilities.no_instance_permission() == Abilities.can?(user, :delete, trail)
     end
 
-    test "can list trails", %{user: user, trail: trail} do
-      assert Common.approved() == Abilities.can?(user, :list, trail)
+    test "can list trails", %{user: user} do
+      assert Common.approved() == Abilities.can?(user, :list)
     end
 
-    test "can create trails", %{user: user, trail: trail} do
-      assert Common.approved() == Abilities.can?(user, :create, trail)
+    test "can create trails", %{user: user} do
+      assert Common.approved() == Abilities.can?(user, :create)
     end
   end
 
@@ -107,12 +107,12 @@ defmodule Tradewinds.Abilities.TrailsTest do
       assert Common.approved() == Abilities.can?(user, :delete, trail)
     end
 
-    test "can list trails", %{user: user, trail: trail} do
-      assert Common.approved() == Abilities.can?(user, :list, trail)
+    test "can list trails", %{user: user} do
+      assert Common.approved() == Abilities.can?(user, :list)
     end
 
-    test "cannot create trails", %{user: user, trail: trail} do
-      assert Common.no_access_permission() == Abilities.can?(user, :create, trail)
+    test "cannot create trails", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :create)
     end
   end
 
@@ -131,12 +131,12 @@ defmodule Tradewinds.Abilities.TrailsTest do
       assert Abilities.no_instance_permission() == Abilities.can?(user, :delete, trail)
     end
 
-    test "can list trails", %{user: user, trail: trail} do
-      assert Common.approved() == Abilities.can?(user, :list, trail)
+    test "can list trails", %{user: user} do
+      assert Common.approved() == Abilities.can?(user, :list)
     end
 
-    test "cannot create trails", %{user: user, trail: trail} do
-      assert Common.no_access_permission() == Abilities.can?(user, :create, trail)
+    test "cannot create trails", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :create)
     end
   end
 
@@ -155,12 +155,12 @@ defmodule Tradewinds.Abilities.TrailsTest do
       assert Abilities.no_instance_permission() == Abilities.can?(user, :delete, trail)
     end
 
-    test "can list trails", %{user: user, trail: trail} do
-      assert Common.approved() == Abilities.can?(user, :list, trail)
+    test "can list trails", %{user: user} do
+      assert Common.approved() == Abilities.can?(user, :list)
     end
 
-    test "cannot create trails", %{user: user, trail: trail} do
-      assert Common.no_access_permission() == Abilities.can?(user, :create, trail)
+    test "cannot create trails", %{user: user} do
+      assert Common.no_access_permission() == Abilities.can?(user, :create)
     end
   end
 
@@ -179,12 +179,12 @@ defmodule Tradewinds.Abilities.TrailsTest do
       assert Abilities.no_instance_permission() == Abilities.can?(user, :delete, trail)
     end
 
-    test "can list trails", %{user: user, trail: trail} do
-      assert Common.approved() == Abilities.can?(user, :list, trail)
+    test "can list trails", %{user: user} do
+      assert Common.approved() == Abilities.can?(user, :list)
     end
 
-    test "cannot create trails", %{user: user, trail: trail} do
-      assert Common.no_access_permission() == Abilities.can?(user, :create, trail)
+    test "cannot create trails", %{user: user } do
+      assert Common.no_access_permission() == Abilities.can?(user, :create)
     end
   end
 end
