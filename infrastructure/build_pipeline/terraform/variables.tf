@@ -87,5 +87,5 @@ variable "codebuild_image" {
 
 variable "codebuild_image_version" {
   type = string
-  default = "0.1"
+  default = "0.2"
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-pipeline_path="$(pwd)/infrastructure/docker/build_pipeline"
+pipeline_path="$(pwd)/infrastructure/build_pipeline/docker"
 version_path="$pipeline_path/pipeline_build_image_version.txt"
 version=$(cat $version_path)
 ecr_image_prefix="347157418948.dkr.ecr.us-east-2.amazonaws.com"
