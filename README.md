@@ -7,12 +7,28 @@
 
 The CI server on AWS, us-east-2 is built by using the terraform found at ${project_root}/infrastructure/build_pipeline
 
-To build the CI service:
-1) `tfa -var-file="infrastructure/build_pipeline/terraform/terraform.tfvars" infrastructure/build_pipeline/terraform/`
+#### CI Build Image
+The CI build image is created from a Dockerfile in `infrastructure/build_pipeline/docker/Dockerfile`
+
+The first thing to do is to update the `pipeline_build_image_version.txt` file with the new version to be of the docker image.
+ECR is configured with immutable image tags, so a new image with an already existing tag will be rejected.
+
+If you have the [semvar utility](https://github.com/fsaintjacques/semver-tool) installed, the script will automatically bump the version for you.
+
+There is a convenience script located with it that will build the image, properly tag it, and push it to ECR.
+It should be called from the project root, like this: `./infrastructure/build_pipeline/docker/build_n_push_pipeline_image.sh`
+
+With that complete, you can now build the 
+
+#### CI Service
+
+Initial build of the CI service:
+1) Run `TF_VAR_codebuild_image_version=$(cat infrastructure/build_pipeline/docker/pipeline_build_image_version.txt) tfa -var-file="infrastructure/build_pipeline/terraform/terraform.tfvars" infrastructure/build_pipeline/terraform/`
 2) Log in and authorize github access, choose the project from the authorized github repo
 3) Setup the webhook
 
-The codebuild image is built from the docker portion of the build_pipline.
+Updating the CI service to use a new build image:  
+Run `TF_VAR_codebuild_image_version=$(cat infrastructure/build_pipeline/docker/pipeline_build_image_version.txt) tfa -var-file="infrastructure/build_pipeline/terraform/terraform.tfvars" infrastructure/build_pipeline/terraform/`
 
 To start your Phoenix server:
 
