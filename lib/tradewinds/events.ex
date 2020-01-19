@@ -36,7 +36,7 @@ defmodule Tradewinds.Events do
 
   """
   def get_event(id) do
-  {:ok, Repo.get!(Event, id)}
+    {:ok, Repo.get!(Event, id)}
   rescue
     _ -> {:error, "Event with ID: #{id} not found"}
   end

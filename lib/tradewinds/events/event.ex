@@ -4,6 +4,7 @@ defmodule Tradewinds.Events.Event do
 """
   use Ecto.Schema
   import Ecto.Changeset
+  alias Tradewinds.Accounts.Registration
 
   @cast [:name, :hosting_kennel, :start, :end, :description, :location, :latitude, :longitude, :creator, :admins]
   @required [:name, :hosting_kennel, :start, :end, :description, :location, :latitude, :longitude, :creator, :admins]
@@ -19,8 +20,10 @@ defmodule Tradewinds.Events.Event do
     field :start, :utc_datetime
     field :creator, :id
     field :admins, {:array, :id}
+    has_many :registrations, Registration
+    has_many :attendees, through: [:registrations, :user]
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

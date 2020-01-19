@@ -1,4 +1,7 @@
 defmodule Tradewinds.Abilities.Common do
+
+  alias Tradewinds.Exceptions.GetTimeError
+
   @moduledoc """
   This module holds common/helper functionality between ability modules.
 """
@@ -14,6 +17,30 @@ defmodule Tradewinds.Abilities.Common do
   @doc since: "0.1.0"
   def approved do
     {:ok, true}
+  end
+
+  @doc """
+  This method is used to determine if a date is in the past.
+
+  Returns `true` or `false`
+
+  ## Examples:
+    iex> Tradewinds.Abilities.Common.historical?(~U[1900-04-17 14:00:00Z])
+    true
+    iex> Tradewinds.Abilities.Common.historical?(~U[9999-04-17 14:00:00Z])
+    false
+"""
+  @doc since: "0.1.0"
+  def historical?(start) do
+    case DateTime.now("Etc/UTC") do
+      {:ok, current} ->
+        case DateTime.compare(start, current) do
+          :gt -> false
+          :eq -> false
+          :lt -> true
+        end
+      _ -> raise GetTimeError
+    end
   end
 
   @doc """
@@ -47,6 +74,19 @@ defmodule Tradewinds.Abilities.Common do
   @doc since: "0.1.0"
   def no_access_permission do
     {:error, "Current user does not have permission to access this content"}
+  end
+
+  @doc """
+  This function defines the response to give when a user does not have permission to act on an instance of an entity.
+  This applies typically to :read, :write, and :delete actions.
+
+  ## Examples:
+    iex> Tradewinds.Abilities.Common.no_instance_permission("test")
+    {:error, "Current user does not have permission to perform this action on this test."}
+"""
+  @doc since: "0.1.0"
+  def no_instance_permission(entity_name) do
+    {:error, "Current user does not have permission to perform this action on this #{entity_name}."}
   end
 
   @doc """

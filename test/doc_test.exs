@@ -9,4 +9,6 @@ defmodule DocTest do
   doctest Tradewinds.Trails.Trail.Abilities
   doctest Tradewinds.Accounts.User.Abilities
   doctest Tradewinds.Accounts.User
+  doctest Tradewinds.Accounts.Registration.Abilities
+  doctest Tradewinds.Fixtures.Registration
 end

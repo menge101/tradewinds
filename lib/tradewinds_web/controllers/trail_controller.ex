@@ -147,7 +147,7 @@ defmodule TradewindsWeb.TrailController do
                 |> redirect(to: Routes.trail_path(conn, :index))
               {:error, message} ->
                 conn
-                |> put_flash(:info, "Error when deleting user: #{message}")
+                |> put_flash(:info, "Error when deleting trail: #{message}")
                 |> redirect_back(default: "/")
             end
           {:error, message} ->
