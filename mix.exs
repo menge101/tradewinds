@@ -60,7 +60,8 @@ defmodule Tradewinds.MixProject do
       {:navigation_history, "~> 0.3"},
       {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
-      {:inch_ex, github: "rrrene/inch_ex", only: [:dev, :test]}
+      {:inch_ex, github: "rrrene/inch_ex", only: [:dev, :test]},
+      {:map_diff, "~> 1.3"}
     ]
   end
 

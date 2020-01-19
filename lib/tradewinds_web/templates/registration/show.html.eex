@@ -1,0 +1,12 @@
+<h1>Show Registration</h1>
+
+<ul>
+
+  <li>
+    <strong>Selection:</strong>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.registration_path(@conn, :edit, @registration) %></span>
+<span><%= link "Back", to: Routes.registration_path(@conn, :index) %></span>

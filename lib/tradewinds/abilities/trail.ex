@@ -5,7 +5,6 @@ defmodule Tradewinds.Trails.Trail.Abilities do
 
   import Tradewinds.Abilities.Common
   alias Tradewinds.Accounts.User
-  alias Tradewinds.Exceptions.GetTimeError
   alias Tradewinds.Trails.Trail
 
   @cannot_change_history {:error, "Historic records are not editable"}
@@ -106,18 +105,5 @@ defmodule Tradewinds.Trails.Trail.Abilities do
   @doc since: "0.1.0"
   def permissions do
     @permissions
-  end
-
-  @doc since: "0.1.0"
-  defp historical?(start) do
-    case DateTime.now("Etc/UTC") do
-      {:ok, current} ->
-        case DateTime.compare(start, current) do
-          :gt -> false
-          :eq -> false
-          :lt -> true
-        end
-      _ -> raise GetTimeError
-    end
   end
 end

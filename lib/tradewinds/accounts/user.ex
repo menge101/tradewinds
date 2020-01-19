@@ -4,6 +4,7 @@ defmodule Tradewinds.Accounts.User do
 """
   use Ecto.Schema
   import Ecto.Changeset
+  alias Tradewinds.Accounts.Registration
 
   schema "users" do
     field :auth0_id, :string
@@ -12,6 +13,8 @@ defmodule Tradewinds.Accounts.User do
     field :avatar_link, :string
     field :email, :string
     field :creator, :string
+    has_many :registrations, Registration
+    has_many :events, through: [:registrations, :event]
 
     timestamps(type: :utc_datetime)
   end

@@ -35,6 +35,7 @@ defmodule TradewindsWeb.Router do
 
     get "/", PageController, :index
     resources "/events", EventController
+    resources "/registrations", RegistrationController
     resources "/trails", TrailController
     resources "/users", UserController
     get "/logout", AuthController, :logout

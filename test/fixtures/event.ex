@@ -5,6 +5,7 @@ defmodule Tradewinds.Fixtures.Event do
   alias Tradewinds.Events
   alias Tradewinds.Events.Event
   alias Tradewinds.Fixtures.User, as: UserFixture
+  import Tradewinds.Fixtures.Common
 
   @admin_attrs [
     %{
