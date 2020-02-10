@@ -16,3 +16,38 @@ config :tradewinds, TradewindsWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :tradewinds, :dynamodb, tablename: "testwinds"
+
+config :ex_aws,
+       debug_requests: false, # set to true to monitor the DDB requests
+       access_key_id: "abcd",
+       secret_access_key: "1234",
+       region: "us-east-1"
+
+config :ex_aws, :dynamodb,
+       scheme: "http://",
+       host: "localhost",
+       port: 8000,
+       region: "us-east-1"
+
+config :tradewinds, :dynamodb,
+       table: %{ name: "testwinds",
+         key_schema: [
+           %{
+             attribute_name: "pk",
+             attribute_type: "string",
+             key_type: "HASH"
+           },
+           %{
+             attribute_name: "sk",
+             attribute_type: "string",
+             key_type: "RANGE"
+           }
+         ],
+         global_indexes: [],
+         local_indexes: [],
+         rcu: 1,
+         wcu: 1,
+         billing_type: :pay_per_request
+       }

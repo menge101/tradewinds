@@ -1,0 +1,48 @@
+Events have attendees(Users)
+Events belong to kennels
+Event has trails
+Kennel has members(Users)
+Kennel has events
+User belongs to a mother kennel
+User belongs to Events
+User is a member of N kennels
+
+
+User sees event registration history
+ - GS2 query user#user_uuid, sort by events
+User sees upcoming events they are registered for
+ - GS2 query user#user_uuid, sort greater than event#now(in yyyymmddhhmm)#00
+All Users registered per event
+ - MI query event_id, sort starts with user#
+User's trail selections for an event
+ - MI query event_id, sort eq user_id, select selection
+Users with no trail selection per event
+ - MI query event_id, sort begins with user, filter selection is empty
+open registration spots per event
+ - MI query event_id range starts with open
+Event data per event
+ - MI query event_id range eq details
+User with event history and kennel membership
+ - GS2 query user#auth0_uid
+Trails per event
+ - MI query event_id range begins with trail
+Kennel with all Events and all Users, and details
+ - GS1 kennel id
+Kennel with upcoming events
+ - GS1 kennel id greater than event#yyyymmdd whatever on sk
+All Events
+ - GS2 event, pick range by GS2 range key event#yyyymmdd
+
+
+
+
+| Main PK - GS1 RK - GS2 RK | Main SK - GS1 PK                                     |  GS2 PK       |  notes                                     | additional data |
+|---------------------------+------------------------------------------------------+---------------|--------------------------------------------+-----------------+-
+| event#yyyymmddhhmm#uid    | user#auth0_id                                        | user#auth0_id |  registered user for event                 | trail selection |
+| event#yyyymmddhhmm#uid    | open##empty_rego_id                                  |               |  open rego slot for event                  |                 |
+| event#yyyymmddhhmm#uid    | kennel#continent#superregion#country#region#muni#uid | event         |  event information                         |                 |
+| event#yyyymmddhhmm#uid    | kennel#continent#superregion#country#region#muni#uid | event         |  event info repeated per additional kennel |                 |
+| event#yyyymmddhhmm#uid    | trail#uuid                                           |               |  trail data for event                      |                 |
+| user#auth0_id@kennel...   | kennel#continent#superregion#country#region#muni#uid | user#auth0_id |  user data including mother kennel         | mother kennel   |
+| user#auth0_id@kennel...   | kennel#continent#superregion#country#region#muni#uid | user#auth0_id |  user membership to kennel                 |                 |
+| kennel...                 | kennel#continent#superregion#country#region#muni#uid |               |  kennel details                            |                 |

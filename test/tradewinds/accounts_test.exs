@@ -2,65 +2,55 @@ defmodule Tradewinds.AccountsTest do
   use Tradewinds.DataCase
 
   alias Tradewinds.Accounts
+  alias Tradewinds.Fixtures.User, as: UserFix
+  alias Tradewinds.Dynamo.Table
 
   describe "users" do
     alias Tradewinds.Accounts.User
-
-    @valid_attrs %{auth0_id: "some auth0_id", name: "some name", email: "some@email.com", permissions: %{}, creator: "exunit tests"}
-    @update_attrs %{auth0_id: "some updated auth0_id", email: "someupdated@email.com", name: "some updated name", permissions: %{}, creator: "exunit tests", owner: nil}
-    @invalid_attrs %{auth0_id: nil, email: nil, name: nil, permissions: nil, creator: nil}
-
-    def user_fixture(attrs \\ %{}) do
-      {:ok, user} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Accounts.create_user()
-      user
-    end
+    setup [:create_table]
 
     test "list_users/0 returns all users" do
-      user = user_fixture()
+      user = UserFix.create_user(%{})
       assert Accounts.list_users() == [user]
     end
 
     test "get_user!/1 returns the user with given id" do
-      user = user_fixture()
+      user = UserFix.create_user(%{})
+      |> elem(1)
+      |> Keyword.get(:user)
       assert Accounts.get_user!(user.id) == user
     end
 
     test "create_user/1 with valid data creates a user" do
-      assert {:ok, %User{} = user} = Accounts.create_user(@valid_attrs)
-      assert user.auth0_id == "some auth0_id"
-      assert user.name == "some name"
-      assert user.permissions == %{}
+      assert {:ok, %{}} == Accounts.create_user(UserFix.user_attrs())
     end
 
     test "create_user/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Accounts.create_user(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_user("")
     end
 
     test "update_user/2 with valid data updates the user" do
-      user = user_fixture()
-      assert {:ok, %User{} = user} = Accounts.update_user(user, @update_attrs)
+      user = UserFix.create_users(%{})
+      assert {:ok, %User{} = user} = Accounts.update_user(user, "")
       assert user.auth0_id == "some updated auth0_id"
       assert user.name == "some updated name"
       assert user.permissions == %{}
     end
 
     test "update_user/2 with invalid data returns error changeset" do
-      user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @invalid_attrs)
+      user = UserFix.create_users(%{})
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, UserFix.invalid_attrs())
       assert user == Accounts.get_user!(user.id)
     end
 
     test "delete_user/1 deletes the user" do
-      user = user_fixture()
+      user = UserFix.create_users(%{})
       assert {:ok, %User{}} = Accounts.delete_user(user)
       assert_raise Ecto.NoResultsError, fn -> Accounts.get_user!(user.id) end
     end
 
     test "change_user/1 returns a user changeset" do
-      user = user_fixture()
+      user = UserFix.create_users(%{})
       assert %Ecto.Changeset{} = Accounts.change_user(user)
     end
   end
@@ -138,6 +128,24 @@ defmodule Tradewinds.AccountsTest do
     test "change_registration/1 returns a registration changeset" do
       {:ok, [registration: registration]} = RegoFix.fixture(:registration, %{}, true)
       assert %Ecto.Changeset{} = Accounts.change_registration(registration)
+    end
+  end
+
+  def create_table(_) do
+    [tablename: table_name] = Application.get_env(:tradewinds, :dynamodb, :tablename)
+    key_schema = [%{"attribute_name" => "pk_gs1sk_gs2sk", "attribute_type" => "string", "key_type" => "HASH"},
+                  %{"attribute_name" => "sk_gs1pk", "attribute_type" => "string", "key_type" => "RANGE"}]
+    global_indexes = [%{"index_name" => "gs1", "projection" => %{"projection_type" => "ALL"},
+                        "key_schema" => [%{"attribute_name" => "gs2pk", "key_type" => "HASH"},
+                                         %{"attribute_name" => "pk_gs1sk_gs2sk", "key_type" => "RANGE"}]},
+                      %{"index_name" => "gs2", "projection" => %{"projection_type" => "ALL"},
+                        "key_schema" => [%{"attribute_name" => "gs2pk", "key_type" => "HASH"},
+                                         %{"attribute_name" => "pk_gs1sk_gs2sk", "key_type" => "RANGE"}]}]
+    Table.create(table_name, key_schema, global_indexes, [], 1, 1, :pay_per_request)
+    IO.puts "Table: #{table_name} created"
+
+    on_exit fn ->
+      Table.delete(table_name)
     end
   end
 end

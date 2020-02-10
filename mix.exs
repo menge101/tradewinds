@@ -61,7 +61,15 @@ defmodule Tradewinds.MixProject do
       {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false},
       {:inch_ex, github: "rrrene/inch_ex", only: [:dev, :test]},
-      {:map_diff, "~> 1.3"}
+      {:map_diff, "~> 1.3"},
+      {:ex_aws, "~> 2.0"},
+      {:ex_aws_dynamo, "~> 2.3"},
+      {:ex_aws_sts, "~> 2.0"},
+      {:hackney, "~> 1.9"},
+      {:configparser_ex, "~> 4.0"},
+      {:puid, "~> 1.0"},
+      {:faker, "~> 0.13", only: :test},
+      {:math, "~> 0.4.0"},
     ]
   end
 

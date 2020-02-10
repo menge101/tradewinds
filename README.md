@@ -2,6 +2,10 @@
 
 ![AWS build badge](https://codebuild.us-east-2.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoicXRVZnBQcVorU2YxMUR4SzE3VE43T25GdktWN3FGTjZlaWhBaE5hbEl1YURzbjVCVVhkUUt1NnhlNU9pZEcxWUFLT1VnOUZtb1BjdThVZENrOXdxNGlFPSIsIml2UGFyYW1ldGVyU3BlYyI6Inp0bzY0YjBFWTRQVlE1YSsiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
 
+### Development
+
+This application uses a local DynamoDB service for testing and development.  
+There is a convenience script @ ./scripts/start_dynamo_local.sh for starting the service.
 
 ### CI
 

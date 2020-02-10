@@ -1,0 +1,1919 @@
+{
+  "ModelName": "Hash House",
+  "ModelMetadata": {
+    "Author": "Nathan Menge",
+    "DateCreated": "Mar 07, 2020, 01:46 PM",
+    "DateLastModified": "Mar 24, 2020, 08:21 PM",
+    "Description": "This encapsulates the data for Hashing.",
+    "Version": "1.0"
+  },
+  "DataModel": [
+    {
+      "TableName": "tradewinds",
+      "KeyAttributes": {
+        "PartitionKey": {
+          "AttributeName": "pk",
+          "AttributeType": "S"
+        },
+        "SortKey": {
+          "AttributeName": "sk",
+          "AttributeType": "S"
+        }
+      },
+      "NonKeyAttributes": [
+        {
+          "AttributeName": "description",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "start",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "end",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "location",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "latitude",
+          "AttributeType": "N"
+        },
+        {
+          "AttributeName": "longitude",
+          "AttributeType": "N"
+        },
+        {
+          "AttributeName": "name",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "creator",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "names",
+          "AttributeType": "M"
+        },
+        {
+          "AttributeName": "kennel",
+          "AttributeType": "M"
+        },
+        {
+          "AttributeName": "id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "permissions",
+          "AttributeType": "M"
+        },
+        {
+          "AttributeName": "avatar_url",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "email",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "trail_id",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "record_type",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "last_update",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "payment",
+          "AttributeType": "M"
+        },
+        {
+          "AttributeName": "date",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "created_at",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "updated_at",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "updated_by",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "search",
+          "AttributeType": "S"
+        },
+        {
+          "AttributeName": "presentation_data",
+          "AttributeType": "M"
+        }
+      ],
+      "TableFacets": [
+        {
+          "FacetName": "event",
+          "KeyAttributeAlias": {
+            "PartitionKeyAlias": "event_id",
+            "SortKeyAlias": "event_start"
+          },
+          "TableData": [
+            {
+              "pk": {
+                "S": "event#20200506#abcd"
+              },
+              "sk": {
+                "S": "20200506T130000"
+              },
+              "description": {
+                "S": "Sample event"
+              },
+              "start": {
+                "S": "2020-06-05T13:00:00"
+              },
+              "end": {
+                "S": "2020-06-08T11:00:00"
+              },
+              "location": {
+                "S": "Sample loc"
+              },
+              "latitude": {
+                "N": "-72.47383"
+              },
+              "longitude": {
+                "N": "33.48392"
+              },
+              "name": {
+                "S": "sample event"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "event_details"
+              },
+              "created_at": {
+                "S": "20200314T164100"
+              },
+              "updated_at": {
+                "S": "20200314T164100"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "search": {
+                "S": "event"
+              },
+              "presentation_data": {
+                "S": "{\"name\":\"Sample Event\"}"
+              }
+            },
+            {
+              "pk": {
+                "S": "event#20200708#abcd"
+              },
+              "sk": {
+                "S": "20200708T130000"
+              },
+              "description": {
+                "S": "Sample event 2"
+              },
+              "start": {
+                "S": "2020-07-07T13:00:00"
+              },
+              "end": {
+                "S": "2020-07-07T18:00:00"
+              },
+              "location": {
+                "S": "Sample loc 2"
+              },
+              "latitude": {
+                "N": "-74.3828"
+              },
+              "longitude": {
+                "N": "35.2828"
+              },
+              "name": {
+                "S": "sample event 2"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "event_details"
+              },
+              "created_at": {
+                "S": "20200314T164100"
+              },
+              "updated_at": {
+                "S": "20200314T164100"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "search": {
+                "S": "event"
+              }
+            }
+          ],
+          "NonKeyAttributes": [
+            "description",
+            "start",
+            "end",
+            "location",
+            "latitude",
+            "longitude",
+            "name",
+            "creator",
+            "record_type",
+            "created_at",
+            "updated_at",
+            "updated_by",
+            "search",
+            "presentation_data"
+          ],
+          "DataAccess": {
+            "MySql": {}
+          }
+        },
+        {
+          "FacetName": "trail",
+          "KeyAttributeAlias": {
+            "PartitionKeyAlias": "trail_id",
+            "SortKeyAlias": "trail_details"
+          },
+          "TableData": [
+            {
+              "pk": {
+                "S": "trail#001"
+              },
+              "sk": {
+                "S": "20200606T110000"
+              },
+              "description": {
+                "S": "Sample trail"
+              },
+              "start": {
+                "S": "2020-06-06T11:00:00"
+              },
+              "latitude": {
+                "N": "35.2828"
+              },
+              "longitude": {
+                "N": "-72.47383"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "trail_id": {
+                "S": "trail#001"
+              },
+              "record_type": {
+                "S": "trail details"
+              },
+              "created_at": {
+                "S": "20200314T164100"
+              },
+              "updated_at": {
+                "S": "20200314T164100"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "search": {
+                "S": "trail"
+              }
+            },
+            {
+              "pk": {
+                "S": "trail#002"
+              },
+              "sk": {
+                "S": "20200606T110000"
+              },
+              "description": {
+                "S": "sample trail 2"
+              },
+              "start": {
+                "S": "2020-06-06T11:00:00"
+              },
+              "latitude": {
+                "N": "35.2828"
+              },
+              "longitude": {
+                "N": "-72.47383"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "trail_id": {
+                "S": "trail#002"
+              },
+              "record_type": {
+                "S": "trail details"
+              },
+              "created_at": {
+                "S": "20200314T164100"
+              },
+              "updated_at": {
+                "S": "20200314T164100"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "search": {
+                "S": "trail"
+              }
+            },
+            {
+              "pk": {
+                "S": "trail#003"
+              },
+              "sk": {
+                "S": "20200708T110000"
+              },
+              "description": {
+                "S": "sample trail 3"
+              },
+              "start": {
+                "S": "2020-07-08T11:00:00"
+              },
+              "latitude": {
+                "N": "35.2828"
+              },
+              "longitude": {
+                "N": "-72.47383"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "trail_id": {
+                "S": "trail#001"
+              },
+              "record_type": {
+                "S": "trail details"
+              },
+              "created_at": {
+                "S": "20200314T164100"
+              },
+              "updated_at": {
+                "S": "20200314T164100"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "search": {
+                "S": "trail"
+              }
+            }
+          ],
+          "NonKeyAttributes": [
+            "description",
+            "start",
+            "latitude",
+            "longitude",
+            "creator",
+            "trail_id",
+            "record_type",
+            "created_at",
+            "updated_at",
+            "updated_by",
+            "search",
+            "presentation_data"
+          ],
+          "DataAccess": {
+            "MySql": {}
+          }
+        },
+        {
+          "FacetName": "user",
+          "KeyAttributeAlias": {
+            "PartitionKeyAlias": "user_id",
+            "SortKeyAlias": "user_details"
+          },
+          "TableData": [
+            {
+              "pk": {
+                "S": "user#crass#john#aabbccdd"
+              },
+              "sk": {
+                "S": "user_details"
+              },
+              "creator": {
+                "S": "sample"
+              },
+              "names": {
+                "M": {
+                  "hash": "Crass",
+                  "first": "John",
+                  "last": "Crass"
+                }
+              },
+              "id": {
+                "S": "aaaabbbbccccdddd"
+              },
+              "permissions": {
+                "M": {
+                  "user": [
+                    "write"
+                  ]
+                }
+              },
+              "avatar_url": {
+                "S": "https://something.com/1234.png"
+              },
+              "email": {
+                "S": "test@smaple.com"
+              },
+              "record_type": {
+                "S": "user details"
+              },
+              "created_at": {
+                "S": "20200314T164100"
+              },
+              "updated_at": {
+                "S": "20200314T164100"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "crass"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "user#00001111222233334444"
+              },
+              "sk": {
+                "S": "user_details"
+              },
+              "creator": {
+                "S": "sample"
+              },
+              "names": {
+                "M": {
+                  "hash": "Weasel",
+                  "first": "K",
+                  "Last": "F"
+                }
+              },
+              "id": {
+                "S": "00001111222233334444"
+              },
+              "permissions": {
+                "M": {
+                  "user": [
+                    "write"
+                  ]
+                }
+              },
+              "avatar_url": {
+                "S": "https://something.com/1234a.png"
+              },
+              "email": {
+                "S": "test2@example.com"
+              },
+              "record_type": {
+                "S": "user_details"
+              },
+              "created_at": {
+                "S": "20200314T164100"
+              },
+              "updated_at": {
+                "S": "20200314T164100"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "weasel"
+                }
+              }
+            }
+          ],
+          "NonKeyAttributes": [
+            "creator",
+            "names",
+            "id",
+            "permissions",
+            "avatar_url",
+            "email",
+            "record_type",
+            "created_at",
+            "updated_at",
+            "updated_by",
+            "presentation_data"
+          ],
+          "DataAccess": {
+            "MySql": {}
+          }
+        },
+        {
+          "FacetName": "kennel",
+          "KeyAttributeAlias": {
+            "PartitionKeyAlias": "kennel_id",
+            "SortKeyAlias": "geo_string"
+          },
+          "TableData": [
+            {
+              "pk": {
+                "S": "kennel#europe#balkans#greece#pelopenesia#sparta#001"
+              },
+              "sk": {
+                "S": "europe#balkans#greece#pelopenesia#sparta"
+              },
+              "description": {
+                "S": "Sparta H3"
+              },
+              "start": {
+                "S": "1973-01-01"
+              },
+              "location": {
+                "S": "Sparta, Greece"
+              },
+              "name": {
+                "S": "Sparta H3"
+              },
+              "creator": {
+                "S": "sample"
+              },
+              "id": {
+                "S": "europe#balkans#greece#pelopenesia#sparta"
+              },
+              "avatar_url": {
+                "S": "https://somehintg.com/spartah3.png"
+              },
+              "email": {
+                "S": "sparah3@example.com"
+              },
+              "record_type": {
+                "S": "kennel details"
+              },
+              "last_update": {
+                "S": "2020-03-01T02:00:00"
+              },
+              "created_at": {
+                "S": "20200314T164100"
+              },
+              "updated_at": {
+                "S": "20200314T164100"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "search": {
+                "S": "kennel"
+              }
+            },
+            {
+              "pk": {
+                "S": "kennel#north_america##usa#midwest#ohio#cleveland"
+              },
+              "sk": {
+                "S": "north_america##usa#midwest#ohio#cleveland"
+              },
+              "description": {
+                "S": "Test Kennel 2 H3"
+              },
+              "start": {
+                "S": "1981-01-01"
+              },
+              "location": {
+                "S": "Cleveland, Ohio"
+              },
+              "name": {
+                "S": "Test Kennel 2"
+              },
+              "creator": {
+                "S": "sample"
+              },
+              "id": {
+                "S": "north_america##usa#midwest#ohio#cleveland"
+              },
+              "avatar_url": {
+                "S": "https://somehintg.com/tk2h3.png"
+              },
+              "email": {
+                "S": "tk2h3@rmail.com"
+              },
+              "record_type": {
+                "S": "kennel details"
+              },
+              "last_update": {
+                "S": "2020-04-01T02:00:00"
+              },
+              "created_at": {
+                "S": "20200401T020000"
+              },
+              "updated_at": {
+                "S": "20200401T020000"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "search": {
+                "S": "kennel"
+              }
+            }
+          ],
+          "NonKeyAttributes": [
+            "description",
+            "start",
+            "location",
+            "name",
+            "creator",
+            "id",
+            "avatar_url",
+            "email",
+            "record_type",
+            "last_update",
+            "created_at",
+            "updated_at",
+            "updated_by",
+            "search",
+            "presentation_data"
+          ],
+          "DataAccess": {
+            "MySql": {}
+          }
+        },
+        {
+          "FacetName": "entity_roles",
+          "KeyAttributeAlias": {
+            "PartitionKeyAlias": "entity_id",
+            "SortKeyAlias": "roles"
+          },
+          "TableData": [
+            {
+              "pk": {
+                "S": "kennel#europe#balkans#greece#pelopenesia#sparta#001"
+              },
+              "sk": {
+                "S": "roles"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "permissions": {
+                "M": {
+                  "gm": [
+                    "read"
+                  ],
+                  "ra": [
+                    "write"
+                  ]
+                }
+              },
+              "record_type": {
+                "S": "kennel_roles"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:11:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:11:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              }
+            }
+          ],
+          "NonKeyAttributes": [
+            "creator",
+            "permissions",
+            "record_type",
+            "created_at",
+            "updated_at",
+            "updated_by",
+            "presentation_data"
+          ],
+          "DataAccess": {
+            "MySql": {}
+          }
+        },
+        {
+          "FacetName": "entity_role_grant",
+          "KeyAttributeAlias": {
+            "PartitionKeyAlias": "entity_id",
+            "SortKeyAlias": "user_id"
+          },
+          "TableData": [
+            {
+              "pk": {
+                "S": "kennel#europe#balkans#greece#pelopenesia#sparta#001"
+              },
+              "sk": {
+                "S": "user#crass#john#aabbccdd"
+              },
+              "description": {
+                "S": "gm"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "end": {
+                "S": "2020-06-01T00:00:00"
+              },
+              "name": {
+                "S": "gm"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "hash": "Crass",
+                  "first": "John",
+                  "Last": "Kraz"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "event#20200506#abcd"
+              },
+              "sk": {
+                "S": "user#crass#john#aabbccdd"
+              },
+              "description": {
+                "S": "owner"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "end": {
+                "S": "2020-06-01T00:00:00"
+              },
+              "name": {
+                "S": "owner"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "hash": "Crass",
+                  "first": "John",
+                  "Last": "Kraz"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "event#20200708#abcd"
+              },
+              "sk": {
+                "S": "kennel#north_america##usa#midwest#ohio#cleveland"
+              },
+              "description": {
+                "S": "owner"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "end": {
+                "S": "2020-06-01T00:00:00"
+              },
+              "name": {
+                "S": "owner"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "hash": "Weasel",
+                  "first": "K",
+                  "Last": "F"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "user#crass#john#aabbccdd"
+              },
+              "sk": {
+                "S": "kennel#europe#balkans#greece#pelopenesia#sparta#001"
+              },
+              "description": {
+                "S": "gm"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "end": {
+                "S": "2020-06-01T00:00:00"
+              },
+              "name": {
+                "S": "gm"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Sample Hash House Harriers",
+                  "acronym": "TKH3",
+                  "geostring": "europe#balkans#greece#pelopenesia#sparta"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "user#crass#john#aabbccdd"
+              },
+              "sk": {
+                "S": "event#20200506#abcd"
+              },
+              "description": {
+                "S": "owner"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "end": {
+                "S": "2020-06-01T00:00:00"
+              },
+              "name": {
+                "S": "owner"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Sample Event"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "user#00001111222233334444"
+              },
+              "sk": {
+                "S": "event#20200708#abcd"
+              },
+              "description": {
+                "S": "owner"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "end": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "owner"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Sample Event 2"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "event#20200506#abcd"
+              },
+              "sk": {
+                "S": "kennel#europe#balkans#greece#pelopenesia#sparta#001"
+              },
+              "description": {
+                "S": "host"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "host"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Sample Hash House Harriers",
+                  "acronym": "TKH3",
+                  "geostring": "europe#balkans#greece#pelopenesia#sparta"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "event#20200708#abcd"
+              },
+              "sk": {
+                "S": "kennel#north_america##usa#midwest#ohio#cleveland"
+              },
+              "description": {
+                "S": "host"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "host"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Test Kennel Hash House Harriers",
+                  "acronym": "TKH3",
+                  "geostring": "#north_america##usa#midwest#ohio#cleveland"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "kennel#europe#balkans#greece#pelopenesia#sparta#001"
+              },
+              "sk": {
+                "S": "event#20200506#abcd"
+              },
+              "description": {
+                "S": "hosting"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "hosting"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Sample Event"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "user#crass#john#aabbccdd"
+              },
+              "sk": {
+                "S": "kennel#europe#balkans#greece#pelopenesia#sparta#001"
+              },
+              "description": {
+                "S": "member"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "member"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Sample Hash House Harriers",
+                  "acronym": "TKH3",
+                  "geostring": "europe#balkans#greece#pelopenesia#sparta"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "user#00001111222233334444"
+              },
+              "sk": {
+                "S": "kennel#north_america##usa#midwest#ohio#cleveland"
+              },
+              "description": {
+                "S": "member"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "member"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Test Kennel Hash House Harriers",
+                  "acronym": "TKH3",
+                  "geostring": "#north_america##usa#midwest#ohio#cleveland"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "kennel#europe#balkans#greece#pelopenesia#sparta#001"
+              },
+              "sk": {
+                "S": "user#crass#john#aabbccdd"
+              },
+              "description": {
+                "S": "member"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "member"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "hash": "Crass",
+                  "first": "John",
+                  "Last": "Kraz"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "kennel#north_america##usa#midwest#ohio#cleveland"
+              },
+              "sk": {
+                "S": "user#00001111222233334444"
+              },
+              "description": {
+                "S": "member"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "member"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "hash": "Weasel",
+                  "first": "K",
+                  "Last": "F"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "trail#001"
+              },
+              "sk": {
+                "S": "event#20200506#abcd"
+              },
+              "description": {
+                "S": "event_trail"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "event_trail"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Sample Event"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "trail#002"
+              },
+              "sk": {
+                "S": "event#20200708#abcd"
+              },
+              "description": {
+                "S": "event_trail"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "event_trail"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Sample Hash House Harriers",
+                  "acronym": "TKH3",
+                  "geostring": "europe#balkans#greece#pelopenesia#sparta"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "event#20200506#abcd"
+              },
+              "sk": {
+                "S": "trail#001"
+              },
+              "description": {
+                "S": "event_trail"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "event_trail"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "trail 1"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "event#20200708#abcd"
+              },
+              "sk": {
+                "S": "trail#002"
+              },
+              "description": {
+                "S": "event_trail"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "event_trail"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "trail 2"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "trail#001"
+              },
+              "sk": {
+                "S": "kennel#europe#balkans#greece#pelopenesia#sparta#001"
+              },
+              "description": {
+                "S": "host"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "host"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Sample Hash House Harriers",
+                  "acronym": "TKH3",
+                  "geostring": "europe#balkans#greece#pelopenesia#sparta"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "trail#003"
+              },
+              "sk": {
+                "S": "kennel#north_america##usa#midwest#ohio#cleveland"
+              },
+              "description": {
+                "S": "host"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "host"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Test Kennel Hash House Harriers",
+                  "acronym": "TKH3",
+                  "geostring": "#north_america##usa#midwest#ohio#cleveland"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "kennel#europe#balkans#greece#pelopenesia#sparta#001"
+              },
+              "sk": {
+                "S": "trail#001"
+              },
+              "description": {
+                "S": "hosting"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "hosting"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "trail 1"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "kennel#north_america##usa#midwest#ohio#cleveland"
+              },
+              "sk": {
+                "S": "trail#003"
+              },
+              "description": {
+                "S": "hosting"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "hosting"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "trail 3"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "trail#001"
+              },
+              "sk": {
+                "S": "user#crass#john#aabbccdd"
+              },
+              "description": {
+                "S": "hare"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "hare"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "hash": "Crass",
+                  "first": "John",
+                  "Last": "Kraz"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "trail#003"
+              },
+              "sk": {
+                "S": "user#00001111222233334444"
+              },
+              "description": {
+                "S": "hare"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "hare"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "hash": "Weasel",
+                  "first": "K",
+                  "Last": "F"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "user#crass#john#aabbccdd"
+              },
+              "sk": {
+                "S": "trail#001"
+              },
+              "description": {
+                "S": "hare"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "hare"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "trail 1"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "user#00001111222233334444"
+              },
+              "sk": {
+                "S": "trail#003"
+              },
+              "description": {
+                "S": "hare"
+              },
+              "start": {
+                "S": "2019-06-01T00:00:00"
+              },
+              "name": {
+                "S": "hare"
+              },
+              "creator": {
+                "S": "nate"
+              },
+              "record_type": {
+                "S": "role_grant"
+              },
+              "created_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_at": {
+                "S": "2020-03-22T09:31:00"
+              },
+              "updated_by": {
+                "S": "nate"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "trail 3"
+                }
+              }
+            }
+          ],
+          "NonKeyAttributes": [
+            "description",
+            "start",
+            "end",
+            "name",
+            "creator",
+            "record_type",
+            "created_at",
+            "updated_at",
+            "updated_by",
+            "presentation_data"
+          ],
+          "DataAccess": {
+            "MySql": {}
+          }
+        },
+        {
+          "FacetName": "search_autocomplete",
+          "KeyAttributeAlias": {
+            "PartitionKeyAlias": "entity_id",
+            "SortKeyAlias": "full_text_match"
+          },
+          "TableData": [
+            {
+              "pk": {
+                "S": "event#20200506#abcd"
+              },
+              "sk": {
+                "S": "sample event"
+              },
+              "search": {
+                "S": "event#sam"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Sample Event"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "event#20200708#abcd"
+              },
+              "sk": {
+                "S": "sample event 2"
+              },
+              "search": {
+                "S": "event#sam"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Sample Event 2"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "trail#001"
+              },
+              "sk": {
+                "S": "sample trail"
+              },
+              "search": {
+                "S": "trail#sam"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Sample Trail"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "trail#002"
+              },
+              "sk": {
+                "S": "sample trail 2"
+              },
+              "search": {
+                "S": "trail#sam"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Sample Trail 2"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "user#crass#john#aabbccdd"
+              },
+              "sk": {
+                "S": "crass"
+              },
+              "search": {
+                "S": "user#cra"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "crass"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "user#00001111222233334444"
+              },
+              "sk": {
+                "S": "weasel"
+              },
+              "search": {
+                "S": "user#wea"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "weasel"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "kennel#europe#balkans#greece#pelopenesia#sparta#001"
+              },
+              "sk": {
+                "S": "spartah3"
+              },
+              "search": {
+                "S": "kennel#spa"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "SpartaH3"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "kennel#north_america##usa#midwest#ohio#cleveland"
+              },
+              "sk": {
+                "S": "tk2h3"
+              },
+              "search": {
+                "S": "kennel#tk2"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Test Kennel 2 Hash House Harriers"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "kennel#europe#balkans#greece#pelopenesia#sparta#001"
+              },
+              "sk": {
+                "S": "sph3"
+              },
+              "search": {
+                "S": "kennel#sph"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "SpartaH3"
+                }
+              }
+            },
+            {
+              "pk": {
+                "S": "kennel#north_america##usa#midwest#ohio#cleveland"
+              },
+              "sk": {
+                "S": "test kennel 2"
+              },
+              "search": {
+                "S": "kennel#tes"
+              },
+              "presentation_data": {
+                "M": {
+                  "name": "Test Kennel 2 Hash House Harriers"
+                }
+              }
+            }
+          ],
+          "NonKeyAttributes": [
+            "search",
+            "presentation_data"
+          ],
+          "DataAccess": {
+            "MySql": {}
+          }
+        }
+      ],
+      "GlobalSecondaryIndexes": [
+        {
+          "IndexName": "search",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "search",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "sk",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        },
+        {
+          "IndexName": "entity_reference",
+          "KeyAttributes": {
+            "PartitionKey": {
+              "AttributeName": "sk",
+              "AttributeType": "S"
+            },
+            "SortKey": {
+              "AttributeName": "pk",
+              "AttributeType": "S"
+            }
+          },
+          "Projection": {
+            "ProjectionType": "ALL"
+          }
+        }
+      ],
+      "DataAccess": {
+        "MySql": {}
+      }
+    }
+  ]
+}

@@ -4,23 +4,9 @@ defmodule Tradewinds.Accounts do
   The Accounts context.
   """
 
-  import Ecto.Query, warn: false
-  alias Tradewinds.Repo
-
   alias Tradewinds.Accounts.User
-
-  @doc """
-  Returns the list of users.
-
-  ## Examples
-
-      iex> list_users()
-      [%User{}, ...]
-
-  """
-  def list_users do
-    Repo.all(User)
-  end
+  alias Tradewinds.Dynamo.QueryBuilder
+  alias Tradewinds.Dynamo.Repo
 
   @doc """
   Gets a single user.
@@ -36,8 +22,13 @@ defmodule Tradewinds.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(%{} = map), do: Repo.get_by!(User, map)
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(user_id) do
+    QueryBuilder.init()
+    |> QueryBuilder.add_index("gs2")
+    |> QueryBuilder.add_key_cond_exp("gs2pk = :user_id")
+    |> QueryBuilder.add_exp_attr_vals([user_id: "user##{user_id}"])
+    |> Repo.query()
+  end
 
   @doc """
   Gets a single user.
@@ -51,16 +42,11 @@ defmodule Tradewinds.Accounts do
       {:error, "blah"}
 
   """
-  def get_user(%{} = map) do
-    {:ok, get_user!(map)}
-  rescue
-    _ -> {:error, "User with #{inspect Map.to_list(map)}  not found"}
-  end
-
   def get_user(id) do
-    {:ok, get_user!(id)}
-  rescue
-    _ -> {:error, "User with ID: #{id} not found"}
+    QueryBuilder.init()
+    |> QueryBuilder.add_index("gs2")
+    |> QueryBuilder.add_key_cond_exp("")
+
   end
 
   @doc """
@@ -99,7 +85,9 @@ defmodule Tradewinds.Accounts do
   def create_user(attrs \\ %{}) do
     %User{}
     |> User.changeset(attrs)
-    |> Repo.insert()
+    |> User.to_generic()
+    |> Map.get(:generic)
+    |> Repo.put()
   end
 
   @doc """
