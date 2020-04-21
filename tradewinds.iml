@@ -105,5 +105,6 @@
     <orderEntry type="library" name="uuid" level="project" />
     <orderEntry type="library" name="faker" level="project" />
     <orderEntry type="library" name="math" level="project" />
+    <orderEntry type="library" name="minimist" level="project" />
   </component>
 </module>
