@@ -134,6 +134,37 @@ defmodule Tradewinds.Dynamo.Repo.Test do
     end
   end
 
+  describe "to_struct" do
+    alias Tradewinds.Accounts.User
+
+    test "it can turn a map with atomic keys into a struct" do
+      map = %{pk: "hi", sk: "there", names: %{a: "aye"},
+        permissions: %{}, email: "z", presentation: %{}, other: "stuff"}
+      struct = Repo.to_struct(map, User)
+      %{pk: "hi", sk: "there", names: %{a: "aye"}, permissions: %{}, email: "z",
+        presentation: %{}} == struct
+      %User{} = struct
+    end
+
+    test "it can turn a map with string keys into a struct" do
+      map = %{"pk" => "hi", "sk" => "there", "names" => %{a: "aye"},
+        "permissions" => %{}, "email" => "z", "presentation" => %{}, "other" => "stuff"}
+      struct = Repo.to_struct(map, User)
+      %{pk: "hi", sk: "there", names: %{a: "aye"}, permissions: %{}, email: "z",
+        presentation: %{}} == struct
+      %User{} = struct
+    end
+
+    test "it can turn a mixed map into a struct" do
+      map = Map.merge(%{pk: "hi"}, %{"sk" => "there", "names" => %{a: "aye"},
+        "permissions" => %{}, "email" => "z", "presentation" => %{}, "other" => "stuff"})
+      struct = Repo.to_struct(map, User)
+      %{pk: "hi", sk: "there", names: %{a: "aye"}, permissions: %{}, email: "z",
+        presentation: %{}} == struct
+      %User{} = struct
+    end
+  end
+
   def create_record(_), do: {:ok, Repo.put(@create_attrs)}
 
   def create_table(_) do

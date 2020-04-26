@@ -53,7 +53,8 @@ defmodule Tradewinds.Dynamo.Repo do
 
 
   @doc """
-  The create/1 function is a special case of the put function where it is hard coded to fail if a record with the given primary key already exists
+  The create/1 function is a special case of the put function where it is hard coded to fail if a record with the given
+  primary key already exists
 """
   @spec create(map(), put_item_opts) :: map()
   def create(record, opts \\ []) do
@@ -151,5 +152,23 @@ defmodule Tradewinds.Dynamo.Repo do
          {"ResourceNotFoundException", "Cannot do operations on a non-existent table"} -> raise TableDoesNotExist
          {exception, message} -> raise ArgumentError, message: "#{exception} - #{message}"
        end
+  end
+
+  def to_struct(attrs, kind) do
+    struct = struct(kind)
+    Map.to_list(struct)
+    |> Enum.reduce(struct, fn {k, _}, acc ->
+         cond do
+           Map.has_key?(attrs, k) ->
+             Map.fetch(attrs, k)
+           Map.has_key?(attrs, Atom.to_string(k)) ->
+             Map.fetch(attrs, Atom.to_string(k))
+           true -> :error
+         end
+         |> case do
+              {:ok, v} -> %{acc | k => v}
+              :error -> acc
+            end
+      end)
   end
 end
