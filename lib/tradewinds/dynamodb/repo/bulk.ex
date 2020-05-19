@@ -14,7 +14,7 @@ defmodule Tradewinds.Dynamo.Repo.Bulk do
   @doc """
     The write_collection function exists to perform a single operation, multi-item write.  It also supports deletes.
   """
-  @spec write_collection(write_collection, write_collection_opts) :: bool
+  @spec write_collection(write_collection, write_collection_opts) :: {:ok, :success}
   def write_collection(collection, opts \\ []) do
     coerce_bulk_collection(collection)
     |> write_coerced_collection(opts)
