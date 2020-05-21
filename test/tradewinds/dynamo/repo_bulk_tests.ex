@@ -7,13 +7,43 @@ defmodule Tradewinds.Dynamo.Repo.Bulk.Test do
   alias Faker.String, as: FakeString
   alias Tradewinds.Dynamo.Table
   alias Tradewinds.Dynamo.Repo
+  alias Tradewinds.Dynamo.Repo.Put
+  alias Tradewinds.Dynamo.Repo.Test
+
+  @create_attrs %{
+    pk: "pk1",
+    sk: "aaaa",
+    email: "email@email.email",
+    permissions: %{}
+  }
+
+  describe "with a record in a DynamoDB table" do
+    setup [:create_table, :create_record]
+
+    test "can write a collection of records" do
+      records = %{put: [%{pk: "pk2", sk: "bbbb", c: "sea", d: "dee"},
+                    %{pk: "pk3", sk: "cccc", c: "see", d: "di"}],
+        delete: [%{pk: "pk1", sk: "aaaa"}]}
+      assert {:ok, :success} = Repo.write_collection(records)
+      assert %{} == Repo.get(%{pk: "pk1", sk: "aaaa"})
+      assert %{"c" => "sea",
+               "d" => "dee",
+               "pk" => "pk2",
+               "sk" => "bbbb"} == Repo.get(%{pk: "pk2", sk: "bbbb"})
+      assert %{"c" => "see",
+               "d" => "di",
+               "pk" => "pk3",
+               "sk" => "cccc"} == Repo.get(%{pk: "pk3", sk: "cccc"})
+    end
+  end
+
 
   describe "bulk writing minutia tests" do
     setup [:create_table]
 
     test "writing 25 records" do
       records = %{put: generate_bulk_put_records(25)}
-      assert_raise(RuntimeError, fn -> Repo.Bulk.write_collection(records) end)
+      assert_raise(RuntimeError, fn -> Repo.write_collection(records) end)
     end
 
     test "largest successful upload" do
@@ -28,6 +58,8 @@ defmodule Tradewinds.Dynamo.Repo.Bulk.Test do
       assert_raise(ArgumentError, fn -> Repo.write_collection(records) end)
     end
   end
+
+  def create_record(_), do: {:ok, Repo.Put.put(@create_attrs)}
 
   def create_table(_) do
     table_def = Application.fetch_env!(:tradewinds, :dynamodb)[:table]

@@ -5,25 +5,24 @@ defmodule Tradewinds.Dynamo.Repo.Test do
   use Tradewinds.DataCase
 
   alias Faker.String, as: FakeString
+  alias Tradewinds.Dynamo.Changeset
   alias Tradewinds.Dynamo.QueryBuilder
   alias Tradewinds.Dynamo.Repo
   alias Tradewinds.Dynamo.Table
+  alias Tradewinds.Accounts.User
+  alias Tradewinds.Helpers.Maps
 
   @create_attrs %{
     pk: "pk1",
     sk: "aaaa",
-    a: "aye",
-    b: "bee"
+    email: "email@email.email",
+    permissions: %{}
   }
 
   @update_attrs %{a: "why", b: "zee"}
 
   describe "with an existing DynamoDB table" do
     setup [:create_table]
-
-    test "can put a record" do
-      assert @create_attrs == Repo.put(@create_attrs)
-    end
 
     test "get on a record that does not exist returns an empty map" do
       assert Repo.get(%{pk: "pk1", sk: "aaaa"}) == %{}
@@ -41,27 +40,10 @@ defmodule Tradewinds.Dynamo.Repo.Test do
       expected = {:ok, %{"ConsumedCapacity" => %{"CapacityUnits" => 1.0, "TableName" => "testwinds"}}}
       assert expected == Repo.delete(%{pk: "pk1", sk: "aaaa"})
     end
-
-    test "can create a record" do
-      assert @create_attrs == Repo.create(@create_attrs)
-    end
-
-    test "cannot update a record that does not exist" do
-      assert_raise(ArgumentError, fn -> Repo.update(@update_attrs) end)
-    end
   end
 
   describe "with a record in a DynamoDB table" do
     setup [:create_table, :create_record]
-
-    test "cannot create a record again" do
-      assert_raise(ArgumentError, fn -> Repo.create(@create_attrs) end)
-    end
-
-    test "can update the record" do
-      update_record = Map.merge(@create_attrs, @update_attrs)
-      assert update_record == Repo.update(update_record)
-    end
 
     test "can get a record" do
       assert %{"a" => "aye",
@@ -69,19 +51,6 @@ defmodule Tradewinds.Dynamo.Repo.Test do
                "pk" => "pk1",
                "sk" => "aaaa",
                "updated_at" => update_time_stamp} = Repo.get(%{pk: "pk1", sk: "aaaa"})
-    end
-
-    test "can put an existing record" do
-      new_record = @create_attrs
-      |> Map.merge(@update_attrs)
-      assert new_record = Repo.put(new_record)
-      assert %{
-               "a" => "why",
-               "b" => "zee",
-               "pk" => "pk1",
-               "sk" => "aaaa",
-               "updated_at" => update_time_stamp
-             } = Repo.get(%{pk: "pk1", sk: "aaaa"})
     end
 
     test "can query a record" do
@@ -96,43 +65,10 @@ defmodule Tradewinds.Dynamo.Repo.Test do
       assert {:ok, %{}} == Repo.delete(%{pk: "pk1", sk: "aaaa"})
     end
 
-    test "can write a collection of records" do
-      records = %{put: [%{pk: "pk2", sk: "bbbb", c: "sea", d: "dee"},
-                        %{pk: "pk3", sk: "cccc", c: "see", d: "di"}],
-                  delete: [%{pk: "pk1", sk: "aaaa"}]}
-      assert {:ok, :success} = Repo.Bulk.write_collection(records)
-      assert %{} == Repo.get(%{pk: "pk1", sk: "aaaa"})
-      assert %{"c" => "sea",
-               "d" => "dee",
-               "pk" => "pk2",
-               "sk" => "bbbb"} == Repo.get(%{pk: "pk2", sk: "bbbb"})
-      assert %{"c" => "see",
-               "d" => "di",
-               "pk" => "pk3",
-               "sk" => "cccc"} == Repo.get(%{pk: "pk3", sk: "cccc"})
-    end
+
   end
 
-  describe "bulk writing minutia tests" do
-    setup [:create_table]
 
-    test "writing 25 records" do
-      records = %{put: generate_bulk_put_records(25)}
-      assert_raise(RuntimeError, fn -> Repo.Bulk.write_collection(records) end)
-    end
-
-    test "largest successful upload" do
-      records = %{put: generate_large_records(23, 400, 1000)}
-      assert Repo.Bulk.write_collection(records) == {:ok, :success}
-    end
-
-    test "raises an Argument error for bulk operations other than :put and :delete" do
-      records = %{put: generate_bulk_put_records(3),
-                  delete: generate_bulk_put_records(3),
-                  hi: generate_bulk_put_records(3)}
-      assert_raise(ArgumentError, fn -> Repo.Bulk.write_collection(records) end)
-    end
-  end
 
   describe "to_struct" do
     alias Tradewinds.Accounts.User
@@ -177,19 +113,12 @@ defmodule Tradewinds.Dynamo.Repo.Test do
     end
   end
 
-  def generate_bulk_put_records(count) do
-    Enum.map(0..count, fn pk -> %{pk: pk, sk: "sk", c: "sea"} end)
-  end
-
   @doc """
-  This function was written with the goal of generating a 16+ MB bulk write request.
-  However it seems trivial to parameterize the function and have a flexible result
+  This is a convenience function to get the keys form a struct
 """
-  def generate_large_records(record_count, field_count, field_length) do
-    Enum.map(0..record_count, fn pk ->
-      Enum.reduce(0..field_count, %{pk: "pk#{pk}", sk: "sk"}, fn count, acc ->
-        Map.put_new(acc, "field#{count}", FakeString.base64(field_length) )
-      end)
-    end)
+  def get_keys_from_struct(struct) do
+    Map.from_struct(struct)
+    |> Map.delete(:__struct__)
+    |> Map.keys()
   end
 end
