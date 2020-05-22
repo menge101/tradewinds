@@ -53,6 +53,12 @@ defmodule Tradewinds.Dynamo.Repo do
   @spec create(map() | %Changeset{} | %Record{}, Put.put_item_opts) :: map()
   defdelegate create(record, opts), to: Put
 
+  @spec update(map() | %Changeset{} | %Record{}) :: map()
+  defdelegate update(record), to: Put
+
+  @spec update(map() | %Changeset{} | %Record{}, Put.put_item_opts) :: map()
+  defdelegate update(record, opts), to: Put
+
   @spec write_collection(Bulk.write_collection) :: bool
   defdelegate write_collection(collection), to: Bulk
 
@@ -92,25 +98,6 @@ defmodule Tradewinds.Dynamo.Repo do
     |> Dynamo.query(query_opts)
     |> ExAws.request
   end
-
-#  defp add_condition(opts, value) do
-#    Keyword.get(opts, :condition_expression, nil)
-#    |> (fn value -> [value] end).()
-#    |> (fn current -> [value | current] end).()
-#    |> Enum.reject(fn value -> value == :nil end)
-#    |> Enum.join(" AND ")
-#    |> (fn condition, kw_collection -> Keyword.put(kw_collection, :condition_expression, condition) end).(opts)
-#  end
-
-#  @spec apply_aliases(map(), map()) :: map()
-#  def apply_aliases(data, aliases) do
-#    Map.new(data, fn {key, val} ->
-#      cond do
-#        Map.has_key?(aliases, key) -> {aliases[key], val}
-#        true -> {key, val}
-#      end
-#    end)
-#  end
 
   @spec distill(list(map())) :: map()
   defp distill(body) do

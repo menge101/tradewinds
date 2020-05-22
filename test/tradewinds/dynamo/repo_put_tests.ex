@@ -6,8 +6,8 @@ defmodule Tradewinds.Dynamo.Repo.Put.Test do
 
   alias Tradewinds.Accounts.User
   alias Tradewinds.Dynamo.Changeset
+  alias Tradewinds.Dynamo.Record
   alias Tradewinds.Dynamo.Repo
-  alias Tradewinds.Dynamo.Repo.Put
   alias Tradewinds.Dynamo.Table
   alias Tradewinds.Helpers.Maps
 
@@ -18,7 +18,7 @@ defmodule Tradewinds.Dynamo.Repo.Put.Test do
     permissions: %{}
   }
 
-  @update_attrs %{a: "why", b: "zee"}
+  @update_attrs %{email: "why@why.y", permissions: %{wam: [:read]}}
 
   describe "with an existing DynamoDB table" do
     setup [:create_table]
@@ -36,8 +36,20 @@ defmodule Tradewinds.Dynamo.Repo.Put.Test do
       assert Maps.stringify_keys(@create_attrs) == Repo.create(cs)
     end
 
-    test "cannot update a record that does not exist" do
-      assert_raise(ArgumentError, fn -> Repo.update(@update_attrs) end)
+    test "cannot update via map a record that does not exist" do
+      data = Map.merge(@create_attrs, @update_attrs)
+      assert_raise(ArgumentError, fn -> Repo.update(data) end)
+    end
+
+    test "cannot update via changeset a record that does not exist" do
+      user = Repo.to_struct(@create_attrs, User)
+      data = Changeset.cast(user, @update_attrs, get_keys_from_struct(user))
+      assert_raise(ArgumentError, fn -> Repo.update(data) end)
+    end
+
+    test "cannot update via Record a record that does not exist" do
+      data = %Record{data: Map.merge(@create_attrs, @update_attrs)}
+      assert_raise(ArgumentError, fn -> Repo.update(data) end)
     end
   end
 
@@ -55,9 +67,28 @@ defmodule Tradewinds.Dynamo.Repo.Put.Test do
       end)
     end
 
-    test "can update the record" do
+    test "cannot create a record from a Record if record already exists" do
+      assert_raise(ArgumentError, fn ->
+        %Record{data: Map.merge(@create_attrs, @update_attrs)}
+        |> Repo.create()
+      end)
+    end
+
+    test "can update the record using a map" do
       update_record = Map.merge(@create_attrs, @update_attrs)
       assert update_record == Repo.update(update_record)
+    end
+
+    test "can update the record using a Changeset" do
+      user = Repo.to_struct(@create_attrs, User)
+      data = Changeset.cast(user, @update_attrs, get_keys_from_struct(user))
+      assert Maps.stringify_keys(Map.merge(@create_attrs, @update_attrs)) == Repo.update(data)
+    end
+
+    test "can update the record using a Record" do
+      data = Map.merge(@create_attrs, @update_attrs)
+      record = %Record{data: data}
+      assert data == Repo.update(record)
     end
 
     test "can put an existing record" do
@@ -65,11 +96,11 @@ defmodule Tradewinds.Dynamo.Repo.Put.Test do
                    |> Map.merge(@update_attrs)
       assert new_record = Repo.Put.put(new_record)
       assert %{
-               "a" => "why",
-               "b" => "zee",
                "pk" => "pk1",
                "sk" => "aaaa",
-               "updated_at" => update_time_stamp
+               "updated_at" => update_time_stamp,
+               "email" => "why@why.y",
+               "permissions" => %{"wam" => ["read"]}
              } = Repo.get(%{pk: "pk1", sk: "aaaa"})
     end
   end

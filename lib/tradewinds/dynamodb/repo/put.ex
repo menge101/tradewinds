@@ -67,15 +67,20 @@ defmodule Tradewinds.Dynamo.Repo.Put do
        end
   end
 
-  @spec update(map(), put_item_opts) :: map()
-  def update(record, opts \\ []) do
+  @spec update(map() | %Changeset{} | %Record{}, put_item_opts) :: map()
+  def update(record, opts \\ [])
+  def update(%Changeset{} = record, opts), do: update(Transform.to_record(record), opts)
+  def update(%Record{} = record, opts) do
     Config.keys()
-    |> Enum.reduce(ConditionExpression.init(), fn key, acc ->
+    |> Enum.reduce(record.constraints, fn key, acc ->
       ConditionExpression.add_existence_condition(acc, key)
     end)
-    |> ConditionExpression.compile()
-    |> (fn conditions -> OptionBuilder.add_put_option(opts, :condition_expression, conditions) end).()
-    |> (fn opts -> put(record, opts) end).()
+    |> (fn conditions -> Map.put(record, :constraints, conditions) end).()
+    |> put(opts)
+  end
+
+  def update(%{} = record, opts) do
+    update(%Record{data: record}, opts)
   end
 
   @spec add_timestamp(map()) :: map()
