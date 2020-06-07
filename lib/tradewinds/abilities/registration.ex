@@ -27,7 +27,7 @@ defmodule Tradewinds.Accounts.Registration.Abilities do
 """
   @doc since: "0.1.0"
   def can?(user, action, registration)
-  def can?(%User{id: current_user_id, permissions: perms}, action, %Registration{user: %User{id: user_id}, event: %Event{start: start}}) when action in @historically_pertinent_actions do
+  def can?(%User{pk: current_user_id, permissions: perms}, action, %Registration{user: %User{pk: user_id}, event: %Event{start: start}}) when action in @historically_pertinent_actions do
     cond do
       historical?(start) -> @cannot_change_history
       current_user_id == user_id -> approved()
@@ -36,7 +36,7 @@ defmodule Tradewinds.Accounts.Registration.Abilities do
     end
   end
 
-  def can?(%User{id: current_user_id, permissions: perms}, :read, %Registration{user: %User{id: user_id}}) do
+  def can?(%User{pk: current_user_id, permissions: perms}, :read, %Registration{user: %User{pk: user_id}}) do
     cond do
       current_user_id == user_id -> approved()
       perm?(perms, :registration, :read) -> approved()
@@ -50,13 +50,13 @@ defmodule Tradewinds.Accounts.Registration.Abilities do
   Return `{:ok, true}` or `{:error, "Current user does not have permission to access this content"}`
 
   ## Examples:
-    iex> Tradewinds.Accounts.Registration.Abilities.can?(%User{id: 1, permissions: %{registration: [:list]}}, :list)
+    iex> Tradewinds.Accounts.Registration.Abilities.can?(%User{pk: 1, permissions: %{registration: [:list]}}, :list)
     {:ok, true}
-    iex> Tradewinds.Accounts.Registration.Abilities.can?(%User{id: 1, permissions: %{registration: [:list]}}, :create)
+    iex> Tradewinds.Accounts.Registration.Abilities.can?(%User{pk: 1, permissions: %{registration: [:list]}}, :create)
     {:error, "Current user does not have permission to access this content"}
-    iex> Tradewinds.Accounts.Registration.Abilities.can?(%User{id: 1, permissions: %{registration: []}}, :create)
+    iex> Tradewinds.Accounts.Registration.Abilities.can?(%User{pk: 1, permissions: %{registration: []}}, :create)
     {:error, "Current user does not have permission to access this content"}
-    iex> Tradewinds.Accounts.Registration.Abilities.can?(%User{id: 1, permissions: %{}}, :create)
+    iex> Tradewinds.Accounts.Registration.Abilities.can?(%User{pk: 1, permissions: %{}}, :create)
     {:error, "Current user does not have permission to access this content"}
 """
   @doc since: "0.1.0"
