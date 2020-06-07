@@ -46,8 +46,8 @@ defmodule Tradewinds.Dynamo.Repo.Test do
     setup [:create_table, :create_record]
 
     test "can get a record" do
-      assert %{"a" => "aye",
-               "b" => "bee",
+      assert %{"email" => "email@email.email",
+               "permissions" => %{},
                "pk" => "pk1",
                "sk" => "aaaa",
                "updated_at" => update_time_stamp} = Repo.get(%{pk: "pk1", sk: "aaaa"})
@@ -58,7 +58,12 @@ defmodule Tradewinds.Dynamo.Repo.Test do
       |> QueryBuilder.add_key_cond_exp("pk = :pk AND sk = :sk")
       |> QueryBuilder.add_exp_attr_vals([pk: "pk1", sk: "aaaa"])
       |> Repo.query()
-      assert {:ok, %{"Count" => 1, "Items" => [%{"a" => %{"S" => "aye"}, "b" => %{"S" => "bee"}}]}} = response
+      assert {:ok,
+               %{"Count" => 1,
+                 "Items" => [%{"email" => %{"S" => "email@email.email"},
+                               "permissions" => %{"M" => %{}}}]
+               }
+             } = response
     end
 
     test "can delete the record" do
@@ -101,7 +106,7 @@ defmodule Tradewinds.Dynamo.Repo.Test do
     end
   end
 
-  def create_record(_), do: {:ok, Repo.put(@create_attrs)}
+  def create_record(_), do: {:ok, Repo.Put.put(@create_attrs)}
 
   def create_table(_) do
     table_def = Application.fetch_env!(:tradewinds, :dynamodb)[:table]

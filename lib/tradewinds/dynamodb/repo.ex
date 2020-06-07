@@ -65,8 +65,6 @@ defmodule Tradewinds.Dynamo.Repo do
   @spec write_collection(Bulk.write_collection, Bulk.write_collection_opts) :: bool
   defdelegate write_collection(collection, opts), to: Bulk
 
-
-
   @doc """
   The delete/1 function exists for the obvious purpose of deleting a record
 """
@@ -87,7 +85,7 @@ defmodule Tradewinds.Dynamo.Repo do
     |> ExAws.request
     |> case do
          {:error, message} -> infer_and_raise_exception(message)
-         {:ok, %{"Item" => body}} -> distill(body)
+         {:ok, %{"Item" => body}} -> decode_body(body)
          {:ok, body} -> body
        end
   end
@@ -99,8 +97,8 @@ defmodule Tradewinds.Dynamo.Repo do
     |> ExAws.request
   end
 
-  @spec distill(list(map())) :: map()
-  defp distill(body) do
+  @spec decode_body(list(map())) :: map()
+  defp decode_body(body) do
     Enum.map(body, fn {field, coded} -> %{field => Decoder.decode(coded)} end)
     |> Enum.reduce(%{}, fn map, acc -> Map.merge(acc, map) end)
   end
@@ -119,10 +117,8 @@ defmodule Tradewinds.Dynamo.Repo do
     Map.to_list(struct)
     |> Enum.reduce(struct, fn {k, _}, acc ->
          cond do
-           Map.has_key?(attrs, k) ->
-             Map.fetch(attrs, k)
-           Map.has_key?(attrs, Atom.to_string(k)) ->
-             Map.fetch(attrs, Atom.to_string(k))
+           Map.has_key?(attrs, k) -> Map.fetch(attrs, k)
+           Map.has_key?(attrs, Atom.to_string(k)) -> Map.fetch(attrs, Atom.to_string(k))
            true -> :error
          end
          |> case do
