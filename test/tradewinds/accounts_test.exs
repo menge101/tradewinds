@@ -3,35 +3,45 @@ defmodule Tradewinds.AccountsTest do
 
   alias Tradewinds.Accounts
   alias Tradewinds.Fixtures.User, as: UserFix
+  alias Tradewinds.Dynamo.Changeset
+  alias Tradewinds.Dynamo.Repo
   alias Tradewinds.Dynamo.Table
+  alias Tradewinds.Test.Support.Compare
 
   describe "users" do
     alias Tradewinds.Accounts.User
     setup [:create_table]
 
-    test "list_users/0 returns all users" do
-      user = UserFix.create_user(%{})
-      assert Accounts.list_users() == [user]
-    end
-
-    test "get_user!/1 returns the user with given id" do
-      user = UserFix.create_user(%{})
-      |> elem(1)
-      |> Keyword.get(:user)
-      assert Accounts.get_user!(user.id) == user
+    test "get_user/1 returns the user with given id" do
+      {:ok, %User{pk: pk} = user} = Accounts.create_user(UserFix.user_attrs())
+      assert user == Accounts.get_user(pk)
     end
 
     test "create_user/1 with valid data creates a user" do
-      assert {:ok, %{}} == Accounts.create_user(UserFix.user_attrs())
+      {:ok, %User{pk: pk, sk: sk} = user} = Accounts.create_user(UserFix.user_attrs())
+      %{"pk" => _, "sk" => "user_details", "record_type" => "user_details"} = Repo.get(%{pk: pk, sk: sk})
+    end
+
+    test "create_user/1 with a primary hash key creates a user" do
+      {:ok, %User{pk: pk, sk: sk} = user} = Accounts.create_user(UserFix.user_attrs(%{pk: "testing-id"}))
+      %{"pk" => _, "sk" => "user_details", "record_type" => "user_details"} = Repo.get(%{pk: pk, sk: sk})
     end
 
     test "create_user/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Accounts.create_user("")
+      assert {:error, %Changeset{changes: %{pk: pk, sk: sk}}} = Accounts.create_user(UserFix.invalid_attrs())
+      assert pk == nil
+      assert sk == "user_details"
+    end
+
+    test "create_user/1 with invalid data with valid names returns error changeset" do
+      user = Accounts.create_user(UserFix.invalid_attrs(%{names: %{first: "hi", last: "ho", hash: "here we go"}}))
+      {:error, %Changeset{changes: %{pk: pk, sk: sk}}} = user
+      assert %{} == Repo.get(%{pk: pk, sk: sk})
     end
 
     test "update_user/2 with valid data updates the user" do
-      user = UserFix.create_users(%{})
-      assert {:ok, %User{} = user} = Accounts.update_user(user, "")
+      {:ok, user} = Accounts.create_user(UserFix.user_attrs())
+      assert {:ok, %User{} = user} = Accounts.update_user(user, %{a: "aye"})
       assert user.auth0_id == "some updated auth0_id"
       assert user.name == "some updated name"
       assert user.permissions == %{}
@@ -132,17 +142,9 @@ defmodule Tradewinds.AccountsTest do
   end
 
   def create_table(_) do
-    [tablename: table_name] = Application.get_env(:tradewinds, :dynamodb, :tablename)
-    key_schema = [%{"attribute_name" => "pk_gs1sk_gs2sk", "attribute_type" => "string", "key_type" => "HASH"},
-                  %{"attribute_name" => "sk_gs1pk", "attribute_type" => "string", "key_type" => "RANGE"}]
-    global_indexes = [%{"index_name" => "gs1", "projection" => %{"projection_type" => "ALL"},
-                        "key_schema" => [%{"attribute_name" => "gs2pk", "key_type" => "HASH"},
-                                         %{"attribute_name" => "pk_gs1sk_gs2sk", "key_type" => "RANGE"}]},
-                      %{"index_name" => "gs2", "projection" => %{"projection_type" => "ALL"},
-                        "key_schema" => [%{"attribute_name" => "gs2pk", "key_type" => "HASH"},
-                                         %{"attribute_name" => "pk_gs1sk_gs2sk", "key_type" => "RANGE"}]}]
-    Table.create(table_name, key_schema, global_indexes, [], 1, 1, :pay_per_request)
-    IO.puts "Table: #{table_name} created"
+    table_def = Application.fetch_env!(:tradewinds, :dynamodb)[:table]
+    %{name: table_name} = table_def
+    Table.create(table_def)
 
     on_exit fn ->
       Table.delete(table_name)

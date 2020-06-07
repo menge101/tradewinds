@@ -5,6 +5,7 @@ defmodule Tradewinds.Accounts do
   """
 
   alias Tradewinds.Accounts.User
+  alias Tradewinds.Dynamo.Config
   alias Tradewinds.Dynamo.QueryBuilder
   alias Tradewinds.Dynamo.Repo
 
@@ -24,8 +25,7 @@ defmodule Tradewinds.Accounts do
   """
   def get_user!(user_id) do
     QueryBuilder.init()
-    |> QueryBuilder.add_index("gs2")
-    |> QueryBuilder.add_key_cond_exp("gs2pk = :user_id")
+    |> QueryBuilder.add_key_cond_exp("#{Config.key("HASH")} = :user_id")
     |> QueryBuilder.add_exp_attr_vals([user_id: "user##{user_id}"])
     |> Repo.query()
   end
@@ -35,18 +35,17 @@ defmodule Tradewinds.Accounts do
 
   ## Examples
 
-      iex> get_user!(123)
+      iex> get_user(123)
       {:ok, %User{}}
 
-      iex> get_user!(456)
+      iex> get_user(456)
       {:error, "blah"}
 
   """
   def get_user(id) do
-    QueryBuilder.init()
-    |> QueryBuilder.add_index("gs2")
-    |> QueryBuilder.add_key_cond_exp("")
-
+    primary_key = %{Config.key("HASH") => id, Config.key("RANGE") => "user_details"}
+    Repo.get(primary_key)
+    |> Repo.to_struct(User)
   end
 
   @doc """
@@ -82,12 +81,13 @@ defmodule Tradewinds.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_user(attrs \\ %{}) do
-    %User{}
+  def create_user(attrs \\ %{}) when is_map(attrs) do
+    changeset = %User{}
     |> User.changeset(attrs)
-    |> User.to_generic()
-    |> Map.get(:generic)
-    |> Repo.put()
+    case changeset do
+      %{errors: [_ | _]} -> {:error, changeset}
+      %{errors: []} -> Repo.create(changeset)
+    end
   end
 
   @doc """
