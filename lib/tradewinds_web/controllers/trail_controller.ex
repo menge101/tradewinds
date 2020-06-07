@@ -3,12 +3,12 @@ defmodule TradewindsWeb.TrailController do
 
   alias Tradewinds.Trails
   alias Tradewinds.Trails.Trail
-  import Tradewinds.Trails.Trail.Abilities
+  alias Tradewinds.Trails.Trail.Abilities, as: It
 
   plug Tradewinds.Plug.Secure
 
   def index(conn, _params) do
-    case conn.assigns.current_user |> can?(:list) do
+    case conn.assigns.current_user |> It.can?(:list) do
       {:ok, true} ->
         trails = Trails.list_trails()
         render(conn, "index.html", trails: trails)
@@ -20,7 +20,7 @@ defmodule TradewindsWeb.TrailController do
   end
 
   def new(conn, _params) do
-    case conn.assigns.current_user |> can?(:create) do
+    case conn.assigns.current_user |> It.can?(:create) do
       {:ok, true} ->
         changeset = Trails.change_trail(%Trail{})
         render(conn, "new.html", changeset: changeset)
@@ -32,7 +32,7 @@ defmodule TradewindsWeb.TrailController do
   end
 
   def create(conn, %{"trail" => trail_params}) do
-    case conn.assigns.current_user |> can?(:create) do
+    case conn.assigns.current_user |> It.can?(:create) do
       {:ok, true} ->
         trail_params
         |> Map.put_new("creator", conn.assigns.current_user.id)
@@ -55,7 +55,7 @@ defmodule TradewindsWeb.TrailController do
   def show(conn, %{"id" => id}) do
     case Trails.get_trail(id) do
       {:ok, trail} ->
-        case conn.assigns.current_user |> can?(:read, trail) do
+        case conn.assigns.current_user |> It.can?(:read, trail) do
           {:ok, true} -> render(conn, "show.html", trail: trail)
           {:error, message} ->
             conn
@@ -63,7 +63,7 @@ defmodule TradewindsWeb.TrailController do
             |> redirect_back(default: "/")
         end
       {:error, message} ->
-        case conn.assigns.current_user |> can?(:read, %Trail{}) do
+        case conn.assigns.current_user |> It.can?(:read, %Trail{}) do
           {:ok, true} ->
             conn
             |> put_flash(:info, message)
@@ -79,7 +79,7 @@ defmodule TradewindsWeb.TrailController do
   def edit(conn, %{"id" => id}) do
     case Trails.get_trail(id) do
       {:ok, trail} ->
-        case conn.assigns.current_user |> can?(:write, trail) do
+        case conn.assigns.current_user |> It.can?(:write, trail) do
           {:ok, true} ->
             changeset = Trails.change_trail(trail)
             render(conn, "edit.html", trail: trail, changeset: changeset)
@@ -89,7 +89,7 @@ defmodule TradewindsWeb.TrailController do
             |> redirect_back(default: "/")
         end
       {:error, message} ->
-        case conn.assigns.current_user |> can?(:read, %Trail{}) do
+        case conn.assigns.current_user |> It.can?(:read, %Trail{}) do
           {:ok, true} ->
             conn
             |> put_flash(:info, message)
@@ -105,7 +105,7 @@ defmodule TradewindsWeb.TrailController do
   def update(conn, %{"id" => id, "trail" => trail_params}) do
     case Trails.get_trail(id) do
       {:ok, trail} ->
-        case conn.assigns.current_user |> can?(:write, trail) do
+        case conn.assigns.current_user |> It.can?(:write, trail) do
           {:ok, true} ->
              case Trails.update_trail(trail, trail_params) do
                {:ok, trail} ->
@@ -122,7 +122,7 @@ defmodule TradewindsWeb.TrailController do
             |> redirect_back(default: "/")
         end
       {:error, message} ->
-        case conn.assigns.current_user |> can?(:read, %Trail{}) do
+        case conn.assigns.current_user |> It.can?(:read, %Trail{}) do
           {:ok, true} ->
             conn
             |> put_flash(:info, message)
@@ -138,7 +138,7 @@ defmodule TradewindsWeb.TrailController do
   def delete(conn, %{"id" => id}) do
     case Trails.get_trail(id) do
       {:ok, trail} ->
-        case conn.assigns.current_user |> can?(:delete, trail) do
+        case conn.assigns.current_user |> It.can?(:delete, trail) do
           {:ok, true} ->
             case Trails.delete_trail(trail) do
               {:ok, _user} ->
@@ -156,7 +156,7 @@ defmodule TradewindsWeb.TrailController do
             |> redirect_back(default: "/")
         end
       {:error, message} ->
-          case conn.assigns.current_user |> can?(:read, %Trail{}) do
+          case conn.assigns.current_user |> It.can?(:read, %Trail{}) do
           {:ok, true} ->
             conn
             |> put_flash(:info, message)
@@ -170,6 +170,6 @@ defmodule TradewindsWeb.TrailController do
   end
 
   def permission_list do
-    permissions()
+    It.permissions()
   end
 end
