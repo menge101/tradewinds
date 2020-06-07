@@ -4,19 +4,19 @@ defmodule Tradewinds.Fixtures.User do
   alias Tradewinds.Accounts.User
 
   @valid_kennel %{name: "Test Kennel", acronym: "TKH3", geostring: "europe#balkans#greece#pelopennesia#sparta"}
-  @valid_name %{hash: "Something vaguely crass", first: "John", last: "Crass"}
-  @invalid_attrs %{auth0_id: nil, email: nil, name: nil, permissions: nil, creator: nil}
+  @valid_names %{hash: "Something vaguely crass", first: "John", last: "Crass"}
+  @invalid_attrs %{names: %{}, presentation: %{}}
+  @presentation_data %{avatar_link: "https://some.url/image.png", hash_name: "Something vaguely crass"}
 
   def user_attrs(overloads \\ %{}) do
     Map.merge(
       %{
-        id: "an auth0_id",
-        name: @valid_name,
+        names: @valid_names,
         email: "some@email.com",
         permissions: %{},
-        creator: "exunit tests",
-        avatar_link: "https://someline.com",
-        kennel: @valid_kennel
+        presentation: @presentation_data,
+        pk: "an auth0 id",
+        sk: "user_details"
       }, overloads)
   end
 

@@ -2,9 +2,11 @@ defmodule Tradewinds.Tests.User do
   use Tradewinds.DataCase
 
   alias Tradewinds.Accounts.User
+  alias Tradewinds.Dynamo.Changeset
   alias Tradewinds.Fixtures.User, as: UserFix
+  alias Tradewinds.Helpers.Structs
 
-  @all_fields [:id, :name, :permissions, :avatar_link, :email, :kennel, :creator]
+  @all_fields Structs.keys(%User{})
 
   describe "User struct" do
     test "can be created" do
@@ -12,66 +14,46 @@ defmodule Tradewinds.Tests.User do
       |> elem(1)
       |> Keyword.get(:user)
       expected = %Tradewinds.Accounts.User{
-        avatar_link: "https://someline.com",
-        creator: "exunit tests",
         email: "some@email.com",
-        id: "an auth0_id",
-        kennel: %{
-          acronym: "TKH3",
-          geostring: "europe#balkans#greece#pelopennesia#sparta",
-          name: "Test Kennel"
-        },
-        name: %{
+        names: %{
           first: "John",
           hash: "Something vaguely crass",
           last: "Crass"
         },
-        permissions: %{}
+        permissions: %{},
+        pk: "an auth0 id",
+        presentation: %{avatar_link: "https://some.url/image.png", hash_name: "Something vaguely crass"},
+        sk: "user_details"
       }
       assert actual == expected
     end
 
-    test "a User Struct can be cast" do
-      cast = UserFix.create_user(%{})
-      |> elem(1)
-      |> Keyword.get(:user)
-      |> User.cast(%{}, @all_fields)
-      assert %{data: %{avatar_link: "https://someline.com",
-                       creator: "exunit tests",
-                       email: "some@email.com",
-                       id: "an auth0_id",
-                       permissions: %{},
-                       name: %{first: "John", hash: "Something vaguely crass", last: "Crass"},
-                       kennel: %{acronym: "TKH3", name: "Test Kennel",
-                         geostring: "europe#balkans#greece#pelopennesia#sparta"}},
-               errors: []} == cast
-    end
-
     test "required fields can be validated" do
-      error_set = %{
-        data: %{},
+      expected = %Changeset{
+        changes: %{email: nil, names: nil, permissions: nil, pk: nil, presentation: nil, sk: nil},
         errors: [
-          "Key id is required",
-          "Key name is required",
-          "Key permissions is required",
-          "Key avatar_link is required",
           "Key email is required",
-          "Key kennel is required",
-          "Key creator is required"
-        ]
+          "Key names is required",
+          "Key permissions is required",
+          "Key pk is required",
+          "Key presentation is required",
+          "Key sk is required"
+        ],
+        original: %{email: nil, names: nil, permissions: nil, pk: nil, presentation: nil, sk: nil}
       }
-      %{data: %{}, errors: []}
+      cs = Changeset.cast(%User{}, %{}, @all_fields)
       |> User.validate_required(@all_fields)
-      |> (fn (observed, expected) ->
-            assert (expected == observed)
-          end).(error_set)
+      assert cs == expected
     end
 
     test "fields can be validated as non-nil" do
-      error_set = ["Key id cannot be nil", "Key name cannot be nil", "Key permissions cannot be nil",
-        "Key avatar_link cannot be nil", "Key email cannot be nil", "Key kennel cannot be nil",
-        "Key creator cannot be nil"]
-      %{data: %{}, errors: []}
+      error_set = ["Key email cannot be nil",
+        "Key names cannot be nil",
+        "Key permissions cannot be nil",
+        "Key pk cannot be nil",
+        "Key presentation cannot be nil",
+        "Key sk cannot be nil"]
+      Changeset.cast(%User{}, %{}, @all_fields)
       |> User.validate_not_nil(@all_fields)
       |> Map.get(:errors)
       |> (fn (observed, expected) ->
@@ -79,56 +61,31 @@ defmodule Tradewinds.Tests.User do
           end).(error_set)
     end
 
-    test "kennel map can be verified for non-existent key" do
-      expected = ["Key kennel is required to exist and be non-nil"]
-      %{data: %{}, errors: []}
-      |> User.validate_kennel()
-      |> Map.get(:errors)
-      |> (fn (observed, expected) -> assert (expected == observed) end).(expected)
-    end
-
-    test "kennel map can be verified" do
-      expected = ["Kennel map requires key [:kennel][name] to exist and be non-nil",
-        "Kennel map requires key [:kennel][acronym] to exist and be non-nil",
-        "Kennel map requires key [:kennel][geostring] to exist and be non-nil"]
-      %{data: %{kennel: %{}}, errors: []}
-      |> User.validate_kennel()
-      |> Map.get(:errors)
-      |> (fn (observed, expected) -> assert (expected == observed) end).(expected)
-    end
-
     test "name map can be verified for non-existent key" do
-      expected = ["Key name is required to exist and be non-nil"]
-      %{data: %{}, errors: []}
-      |> User.validate_name()
-      |> Map.get(:errors)
-      |> (fn (observed, expected) -> assert (expected == observed) end).(expected)
+      expected = %Changeset{
+        changes: %{email: nil, names: nil, permissions: nil, pk: nil, presentation: nil, sk: nil},
+        errors: ["Key 'names' is required to exist and be non-nil"],
+        original: %{email: nil, names: nil, permissions: nil, pk: nil, presentation: nil, sk: nil}
+      }
+      cs = Changeset.cast(%User{}, %{}, @all_fields)
+           |> User.validate_names()
+      assert cs == expected
     end
 
     test "name map can be verified" do
-      expected = ["Name map requires key [name][hash] to exist and be non-nil",
-        "Name map requires key [name][first] to exist and be non-nil",
-        "Name map requires key [name][last] to exist and be non-nil"]
-      %{data: %{name: %{}}, errors: []}
-      |> User.validate_name()
-      |> Map.get(:errors)
-      |> (fn (observed, expected) -> assert (expected == observed) end).(expected)
-    end
+      expected = %Changeset{
+        changes: %{email: nil, names: %{}, permissions: nil, pk: nil, presentation: nil, sk: nil},
+        errors: [
+          "Name map requires key [name][first] to exist and be non-nil",
+          "Name map requires key [name][last] to exist and be non-nil",
+          "Name map requires key [name][hash] to exist and be non-nil"
+        ],
+        original: %{email: nil, names: nil, permissions: nil, pk: nil, presentation: nil, sk: nil}
+      }
 
-    test "a changeset can be created from a User struct" do
-      assert %{data: %{}, errors: []} = UserFix.create_user(%{})
-                                        |> elem(1)
-                                        |> Keyword.get(:user)
-                                        |> User.changeset(%{})
-    end
-
-    test "a changeset can be converted to a generic map" do
-      assert %{data: %{}, errors: [], generic: %{}} = UserFix.create_user(%{})
-                                                      |> elem(1)
-                                                      |> Keyword.get(:user)
-                                                      |> User.changeset(%{})
-                                                      |> User.to_generic()
-
+      cs = Changeset.cast(%User{}, %{names: %{}}, @all_fields)
+           |> User.validate_names()
+      assert cs == expected
     end
   end
 end

@@ -28,20 +28,20 @@ defmodule Tradewinds.Accounts.User.Abilities do
   Return `{:ok, true}` or `{:error, "some message"}`
 
   ## Examples:
-    iex> Tradewinds.Accounts.User.Abilities.can?(%User{id: 1, permissions: %{}}, :read, %User{id: 1})
+    iex> Tradewinds.Accounts.User.Abilities.can?(%User{pk: 1, permissions: %{}}, :read, %User{pk: 1})
     {:ok, true}
-    iex> Tradewinds.Accounts.User.Abilities.can?(%User{id: 1, permissions: %{}}, :delete, %User{id: 1})
+    iex> Tradewinds.Accounts.User.Abilities.can?(%User{pk: 1, permissions: %{}}, :delete, %User{pk: 1})
     {:error, "You cannot delete yourself"}
-    iex> Tradewinds.Accounts.User.Abilities.can?(%User{id: 1, permissions: %{user: [:read]}}, :read, %User{id: 2})
+    iex> Tradewinds.Accounts.User.Abilities.can?(%User{pk: 1, permissions: %{user: [:read]}}, :read, %User{pk: 2})
     {:ok, true}
-    iex> Tradewinds.Accounts.User.Abilities.can?(%User{id: 1, permissions: %{user: [:delete]}}, :delete, %User{id: 2})
+    iex> Tradewinds.Accounts.User.Abilities.can?(%User{pk: 1, permissions: %{user: [:delete]}}, :delete, %User{pk: 2})
     {:ok, true}
-    iex> Tradewinds.Accounts.User.Abilities.can?(%User{id: 1, permissions: %{user: [:delete]}}, :read, %User{id: 2})
+    iex> Tradewinds.Accounts.User.Abilities.can?(%User{pk: 1, permissions: %{user: [:delete]}}, :read, %User{pk: 2})
     {:error, "Current user does not have permission to perform this action on this user."}
 """
   @doc since: "0.1.0"
   def can?(current_user, action, user)
-  def can?(%User{id: current_user_id, permissions: perms}, :delete, %User{id: user_id}) do
+  def can?(%User{pk: current_user_id, permissions: perms}, :delete, %User{pk: user_id}) do
     cond do
       current_user_id == user_id -> @cannot_delete_self
       perm?(perms, :user, :delete) -> approved()
@@ -49,7 +49,7 @@ defmodule Tradewinds.Accounts.User.Abilities do
     end
   end
 
-  def can?(%User{id: current_user_id, permissions: perms}, action, %User{id: user_id}) when action in @instance_perms do
+  def can?(%User{pk: current_user_id, permissions: perms}, action, %User{pk: user_id}) when action in @instance_perms do
     cond do
       current_user_id == user_id -> approved()
       perm?(perms, :user, action) -> approved()

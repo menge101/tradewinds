@@ -20,7 +20,7 @@ defmodule UserFromAuth do
     find_or_create_guts(auth)
   end
 
-  def find_or_create(%Tradewinds.Accounts.User{id: id}), do: Accounts.get_user(id)
+  def find_or_create(%User{pk: id}), do: Accounts.get_user(id)
 
   defp find_or_create_guts(auth) do
     case Accounts.get_user(%{auth0_id: auth.uid}) do
