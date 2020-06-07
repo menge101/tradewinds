@@ -3,12 +3,12 @@ defmodule TradewindsWeb.RegistrationController do
 
   alias Tradewinds.Accounts
   alias Tradewinds.Accounts.Registration
-  import Tradewinds.Accounts.Registration.Abilities
+  alias Tradewinds.Accounts.Registration.Abilities, as: It
 
   plug Tradewinds.Plug.Secure
 
   def index(conn, _params) do
-    case conn.assigns.current_user |> can?(:list) do
+    case conn.assigns.current_user |> It.can?(:list) do
       {:ok, true} ->
         regos = Accounts.list_registrations()
         render(conn, "index.html", registrations: regos)
@@ -20,7 +20,7 @@ defmodule TradewindsWeb.RegistrationController do
   end
 
   def new(conn, _params) do
-    case conn.assigns.current_user |> can?(:create) do
+    case conn.assigns.current_user |> It.can?(:create) do
       {:ok, true} ->
         changeset = Accounts.change_registration(%Registration{})
         render(conn, "new.html", changeset: changeset)
@@ -32,7 +32,7 @@ defmodule TradewindsWeb.RegistrationController do
   end
 
   def create(conn, %{"registration" => registration_params}) do
-    case conn.assigns.current_user |> can?(:create) do
+    case conn.assigns.current_user |> It.can?(:create) do
       {:ok, true} ->
         case Accounts.create_registration(registration_params) do
           {:ok, registration} ->
@@ -53,7 +53,7 @@ defmodule TradewindsWeb.RegistrationController do
     case Accounts.get_registration(id) do
       {:ok, rego} ->
         loaded_rego = Tradewinds.Repo.preload(rego, [:event, :user])
-        case conn.assigns.current_user |> can?(:read, loaded_rego) do
+        case conn.assigns.current_user |> It.can?(:read, loaded_rego) do
           {:ok, true} -> render(conn, "show.html", registration: rego)
           {:error, message} ->
             conn
@@ -61,7 +61,7 @@ defmodule TradewindsWeb.RegistrationController do
             |> redirect_back(default: "/")
         end
       {:error, message} ->
-        case conn.assigns.current_user |> can?(:read, %Registration{}) do
+        case conn.assigns.current_user |> It.can?(:read, %Registration{}) do
           {:ok, true} ->
             conn
             |> put_flash(:error, message)
@@ -78,7 +78,7 @@ defmodule TradewindsWeb.RegistrationController do
     case Accounts.get_registration(id) do
       {:ok, rego} ->
         loaded_rego = Tradewinds.Repo.preload(rego, [:event, :user])
-        case conn.assigns.current_user |> can?(:write, loaded_rego) do
+        case conn.assigns.current_user |> It.can?(:write, loaded_rego) do
           {:ok, true} ->
             changeset = Accounts.change_registration(rego)
             render(conn, "edit.html", registration: rego, changeset: changeset)
@@ -88,7 +88,7 @@ defmodule TradewindsWeb.RegistrationController do
             |> redirect_back(default: "/")
         end
       {:error, message} ->
-        case conn.assigns.current_user |> can?(:read, %Registration{}) do
+        case conn.assigns.current_user |> It.can?(:read, %Registration{}) do
           {:ok, true} ->
             conn
             |> put_flash(:info, message)
@@ -106,7 +106,7 @@ defmodule TradewindsWeb.RegistrationController do
     case Accounts.get_registration(id) do
       {:ok, rego} ->
         loaded_rego = Tradewinds.Repo.preload(rego, [:event, :user])
-        case conn.assigns.current_user |> can?(:write, loaded_rego) do
+        case conn.assigns.current_user |> It.can?(:write, loaded_rego) do
           {:ok, true} ->
             case Accounts.update_registration(loaded_rego, registration_params) do
               {:ok, rego} ->
@@ -122,7 +122,7 @@ defmodule TradewindsWeb.RegistrationController do
             |> redirect_back(default: "/")
         end
       {:error, message} ->
-        case conn.assigns.current_user |> can?(:read, %Registration{}) do
+        case conn.assigns.current_user |> It.can?(:read, %Registration{}) do
           {:ok, true} ->
             conn
             |> put_flash(:info, message)
@@ -139,7 +139,7 @@ defmodule TradewindsWeb.RegistrationController do
     case Accounts.get_registration(id) do
       {:ok, rego} ->
         loaded_rego = Tradewinds.Repo.preload(rego, [:event, :user])
-        case conn.assigns.current_user |> can?(:delete, loaded_rego) do
+        case conn.assigns.current_user |> It.can?(:delete, loaded_rego) do
           {:ok, true} ->
             case Accounts.delete_registration(rego) do
               {:ok, _user} ->
@@ -157,7 +157,7 @@ defmodule TradewindsWeb.RegistrationController do
             |> redirect_back(default: "/")
         end
       {:error, message} ->
-        case conn.assigns.current_user |> can?(:read, %Registration{}) do
+        case conn.assigns.current_user |> It.can?(:read, %Registration{}) do
           {:ok, true} ->
             conn
             |> put_flash(:info, message)
