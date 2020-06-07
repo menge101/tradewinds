@@ -26,20 +26,20 @@ defmodule Tradewinds.Trails.Trail.Abilities do
   Return `{:ok, true}` or `{:error, "some message"}`
 
   ## Examples:
-    iex> Tradewinds.Trails.Trail.Abilities.can?(%User{id: 1, permissions: %{trail: [:write]}}, :write, %Trail{start: ~U[2000-04-17 14:00:00Z], owners: [1]})
+    iex> Tradewinds.Trails.Trail.Abilities.can?(%User{pk: 1, permissions: %{trail: [:write]}}, :write, %Trail{start: ~U[2000-04-17 14:00:00Z], owners: [1]})
     {:error, "Historic records are not editable"}
-    iex> Tradewinds.Trails.Trail.Abilities.can?(%User{id: 1, permissions: %{trail: [:delete]}}, :write, %Trail{start: ~U[2100-04-17 14:00:00Z], owners: [1]})
+    iex> Tradewinds.Trails.Trail.Abilities.can?(%User{pk: 1, permissions: %{trail: [:delete]}}, :write, %Trail{start: ~U[2100-04-17 14:00:00Z], owners: [1]})
     {:ok, true}
-    iex> Tradewinds.Trails.Trail.Abilities.can?(%User{id: 1, permissions: %{trail: [:write]}}, :write, %Trail{start: ~U[2100-04-17 14:00:00Z], owners: [2]})
+    iex> Tradewinds.Trails.Trail.Abilities.can?(%User{pk: 1, permissions: %{trail: [:write]}}, :write, %Trail{start: ~U[2100-04-17 14:00:00Z], owners: [2]})
     {:ok, true}
-    iex> Tradewinds.Trails.Trail.Abilities.can?(%User{id: 1, permissions: %{trail: [:delete]}}, :write, %Trail{start: ~U[2100-04-17 14:00:00Z], owners: [2]})
+    iex> Tradewinds.Trails.Trail.Abilities.can?(%User{pk: 1, permissions: %{trail: [:delete]}}, :write, %Trail{start: ~U[2100-04-17 14:00:00Z], owners: [2]})
     {:error, "Current user does not have permission to perform this action on this trail."}
     iex> Tradewinds.Trails.Trail.Abilities.can?(%User{}, :read, %Trail{})
     {:ok, true}
 """
   @doc since: "0.1.0"
   def can?(user, action, trail)
-  def can?(%User{id: user_id, permissions: perms}, action, %Trail{owners: owners, start: start}) when action in @historically_pertinent_actions do
+  def can?(%User{pk: user_id, permissions: perms}, action, %Trail{owners: owners, start: start}) when action in @historically_pertinent_actions do
     cond do
       historical?(start) -> @cannot_change_history
       Enum.member?(owners, user_id) -> approved()
@@ -59,13 +59,13 @@ defmodule Tradewinds.Trails.Trail.Abilities do
   Return `{:ok, true}` or `{:error, "some message"}`
 
   ## Examples:
-    iex> Tradewinds.Trails.Trail.Abilities.can?(%User{id: 1, permissions: %{trail: [:create]}}, :create)
+    iex> Tradewinds.Trails.Trail.Abilities.can?(%User{pk: 1, permissions: %{trail: [:create]}}, :create)
     {:ok, true}
-    iex> Tradewinds.Trails.Trail.Abilities.can?(%User{id: 1, permissions: %{trail: [:list]}}, :create)
+    iex> Tradewinds.Trails.Trail.Abilities.can?(%User{pk: 1, permissions: %{trail: [:list]}}, :create)
     {:error, "Current user does not have permission to access this content"}
-    iex> Tradewinds.Trails.Trail.Abilities.can?(%User{id: 1, permissions: %{trail: [:list]}}, :list)
+    iex> Tradewinds.Trails.Trail.Abilities.can?(%User{pk: 1, permissions: %{trail: [:list]}}, :list)
     {:ok, true}
-    iex> Tradewinds.Trails.Trail.Abilities.can?(%User{id: 1, permissions: %{trail: [:create]}}, :list)
+    iex> Tradewinds.Trails.Trail.Abilities.can?(%User{pk: 1, permissions: %{trail: [:create]}}, :list)
     {:ok, true}
 """
   @doc since: "0.1.0"
