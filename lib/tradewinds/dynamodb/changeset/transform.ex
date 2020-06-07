@@ -8,13 +8,19 @@ defmodule Tradewinds.Dynamo.Changeset.Transform do
   alias Tradewinds.Dynamo.OptionBuilder
   alias Tradewinds.Dynamo.OptionBuilder.ConditionExpression
   alias Tradewinds.Dynamo.Record
+  alias Tradewinds.Helpers.Maps
 
   def to_record(%Changeset{} = changeset) do
-    find_constraints(changeset)
+    constraints = find_constraints(changeset)
     |> build_conditions_from_constraints()
-    |> (fn constraints ->
-          %Record{constraints: constraints, data: Map.get(changeset, :changes)}
-        end).()
+
+    data = changeset
+    |> Map.get(:changes)
+    |> Maps.stringify_keys()
+    |> Enum.filter(fn {k, v} -> !is_nil(v) end)
+    |> Enum.reduce(%{}, fn {k, v}, acc -> Map.put(acc, k, v) end)
+
+    %Record{constraints: constraints, data: data}
   end
 
   def build_conditions_from_constraints(constraints) do
@@ -23,7 +29,9 @@ defmodule Tradewinds.Dynamo.Changeset.Transform do
   end
 
   def find_constraints(%Changeset{} = changeset) do
-    Enum.filter(Map.get(changeset, :original), fn {k, v} -> Map.get(changeset, :changes)[k] == v end)
+    Enum.filter(Maps.stringify_keys(Map.get(changeset, :original)),
+      fn {k, v} -> Maps.stringify_keys(Map.get(changeset, :changes))[k] == v end)
+    |> Enum.filter(fn {_, v} -> !is_nil(v) end)
     |> Keyword.keys()
   end
 end
