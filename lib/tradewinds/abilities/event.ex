@@ -40,7 +40,7 @@ defmodule Tradewinds.Events.Event.Abilities do
 
 """
   @doc since: "0.1.0"
-  def can?(%User{id: user_id,  permissions: perms}, action, %Event{admins: admins}) when action in @instance_permissions do
+  def can?(%User{pk: user_id,  permissions: perms}, action, %Event{admins: admins}) when action in @instance_permissions do
     cond do
       perm?(perms, :event, action) -> approved()
       admins == nil -> no_instance_permission()
